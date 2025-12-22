@@ -22,12 +22,13 @@ O **sabIA** é uma solução desenvolvida durante a **Startup Weekend** com o ob
 
 O projeto foi construído utilizando as seguintes tecnologias:
 
-*| Categoria | Tecnologia |
-*| **Frontend** | [React / Next.js / Vue] |
-*| **Backend** | [Node.js / Express] |
-*| **IA/ML** | [Llama] |
-*| **Banco de Dados** | [MySQL] |
-*| **Design** | [Lovable / Figma] |
+| Categoria | Tecnologia |
+|:--------:|:--------:|
+| **Frontend** | [React / Next.js / Vue] |
+| **Backend** | [Node.js / Express] |
+| **IA/ML** | [Llama] |
+| **Banco de Dados** | [MySQL] |
+| **Design** | [Lovable / Figma] |
 
 ---
 

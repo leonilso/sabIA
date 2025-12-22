@@ -52,12 +52,10 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
      ```bash
      # Se for Node.js
     npm install
-    # Se for Python
-    pip install -r requirements.txt
 
 4. **Inicie a aplicação:**
      ```bash
-     npm start # ou python main.py
+     npm start
 
 
 

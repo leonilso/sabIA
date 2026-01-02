@@ -1,76 +1,128 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, Edit, Download, Crown } from "lucide-react";
+import { pegarProjetoPorIdPublico } from "../services/projetos.service";
+import { gerarProvas } from "../services/impressao.service";
+import { useParams } from "react-router-dom";
+
+const vazio = {
+  ID: 0,
+  ID_usuario: 0,
+  disciplina: "",
+  ID_turma: 0,
+  QTD_questoes: 0,
+  QTD_provas: 0,
+  public_id: "",
+  status: "",
+  data_limite: null,
+  nome_turma: "",
+  temas: [],
+};
 
 export default function PreVisualizacao() {
+  const { idProjeto } = useParams();
   const [imprimirGabarito, setImprimirGabarito] = useState(false);
+  const [projeto, setProjeto] = useState(vazio);
+  const [loadingPdf, setLoadingPdf] = useState(false);
+  const [url, setUrl] = useState("")
 
-  // Mock data
-  const provaInfo = {
-    qtdProvas: 5,
-    disciplina: "Matemática",
-    turma: "8º ano",
-    provasRestantes: 2,
-  };
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const projetoApi = await pegarProjetoPorIdPublico(idProjeto);
+        setProjeto(projetoApi);
+      } catch (err) {
+        console.error("Erro ao carregar projeto", err);
+      }
+    }
+    carregar();
+  }, [idProjeto]);
+
+  async function handleGerarPdf() {
+    try {
+      setLoadingPdf(true);
+      console.log(projeto.public_id)
+      const pdfBlob = await gerarProvas(projeto.public_id);
+
+      const urlApi = window.URL.createObjectURL(
+        new Blob([pdfBlob], { type: "application/pdf" })
+      );
+      setUrl(urlApi)
+
+      // window.open(url); // abre o PDF em nova aba
+    } catch (err) {
+      console.error("Erro ao gerar PDF", err);
+    } finally {
+      setLoadingPdf(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center py-8 px-4">
       <div className="flex flex-col lg:flex-row gap-6 max-w-5xl w-full">
-        {/* Preview Card */}
+
+        {/* Preview */}
         <div className="flex-[2] bg-card rounded-3xl p-6 shadow-card">
-          <h2 className="font-display text-2xl font-bold text-foreground italic text-center mb-6">
+          <h2 className="font-display text-2xl font-bold italic text-center mb-6">
             Pré-Visualização
           </h2>
 
-          <div className="bg-muted rounded-xl p-4 aspect-[3/4] flex items-center justify-center mb-6 overflow-hidden">
-            <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm">
-              <div className="border-b-2 border-foreground pb-2 mb-4">
-                <h3 className="font-bold">PROVA 1</h3>
-                <p className="text-xs text-muted-foreground">Tipo: Prova Personalizada (Aluno ID: 1)</p>
-                <p className="text-xs text-muted-foreground">Temática: minecraft</p>
-                <p className="text-xs text-muted-foreground">Adaptações: Inclui Dicas</p>
-              </div>
-              <div className="space-y-4 text-xs">
-                <div>
-                  <p className="font-medium">1. Steve está construindo uma casa no Minecraft...</p>
-                  <div className="ml-4 space-y-1 mt-1">
-                    <p>(A) 128</p>
-                    <p>(B) 192</p>
-                    <p>(C) 256</p>
-                    <p>(D) 64</p>
-                  </div>
+          <div className="bg-muted rounded-xl p-4 aspect-[3/4] flex items-center justify-center mb-6">
+            {url ? (
+              <iframe
+                src={url}
+                title="Preview PDF"
+                className="w-full h-full rounded-lg bg-white"
+              />
+            ) : (
+              <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm text-xs">
+                <div className="border-b pb-2 mb-4">
+                  <h3 className="font-bold">PROVA</h3>
+                  <p>Disciplina: {projeto.disciplina}</p>
+                  <p>Turma: {projeto.nome_turma}</p>
+                  <p>Questões: {projeto.QTD_questoes}</p>
+                  <p>Temas: {projeto.temas.join(", ")}</p>
                 </div>
+                <p className="italic text-muted-foreground">
+                  Pré-visualização simbólica. O conteúdo real será gerado no PDF.
+                </p>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex gap-4">
-            <Button 
-              variant="outline" 
-              className="flex-1 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground rounded-full h-12"
+            <Button
+              variant="outline"
+              className="flex-1 rounded-full h-12"
             >
               <Edit className="w-4 h-4 mr-2" />
               Editar
             </Button>
-            <Button className="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full h-12">
+
+            <Button
+              onClick={handleGerarPdf}
+              disabled={loadingPdf}
+              className="flex-1 rounded-full h-12"
+            >
               <Download className="w-4 h-4 mr-2" />
-              Gerar PDF
+              {loadingPdf ? "Gerando..." : "Gerar PDF"}
             </Button>
           </div>
         </div>
 
-        {/* Summary Card */}
+        {/* Resumo */}
         <div className="flex-1 bg-primary rounded-3xl p-6 text-primary-foreground flex flex-col">
           <div className="space-y-3 mb-6">
             <h3 className="font-display text-xl font-bold">
-              Nº de Provas: <span>{provaInfo.qtdProvas}</span>
+              Nº de Provas: <span>{projeto.QTD_provas}</span>
             </h3>
             <p className="text-lg">
-              Disciplina: <strong>{provaInfo.disciplina}</strong>
+              Disciplina: <strong>{projeto.disciplina}</strong>
             </p>
             <p className="text-lg">
-              Turma: <strong>{provaInfo.turma}</strong>
+              Turma: <strong>{projeto.nome_turma}</strong>
             </p>
           </div>
 
@@ -79,7 +131,6 @@ export default function PreVisualizacao() {
               id="gabarito"
               checked={imprimirGabarito}
               onCheckedChange={(checked) => setImprimirGabarito(!!checked)}
-              className="border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
             />
             <label htmlFor="gabarito" className="text-sm">
               Imprimir gabarito
@@ -90,16 +141,17 @@ export default function PreVisualizacao() {
             <div className="flex items-center gap-2 mb-4 justify-center">
               <FileText className="w-5 h-5" />
               <span className="text-sm italic">
-                restam apenas {provaInfo.provasRestantes} provas grátis
+                Restam apenas 3 provas grátis
               </span>
             </div>
 
-            <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full h-12 font-bold">
+            <Button className="w-full rounded-full h-12 font-bold">
               <Crown className="w-4 h-4 mr-2" />
               Premium
             </Button>
           </div>
         </div>
+
       </div>
     </div>
   );

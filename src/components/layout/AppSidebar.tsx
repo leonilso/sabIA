@@ -6,7 +6,7 @@ const menuItems = [
   { icon: Users, label: "Turmas", path: "/turmas" },
   { icon: BookOpen, label: "Material Complementar", path: "/materiais" },
   { icon: FolderKanban, label: "Meus Projetos", path: "/projetos" },
-  { icon: GraduationCap, label: "Alunos", path: "/alunos" },
+  // { icon: GraduationCap, label: "Alunos", path: "/alunos" },
 ];
 
 export function AppSidebar() {

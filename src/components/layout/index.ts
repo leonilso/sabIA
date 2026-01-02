@@ -1,3 +1,3 @@
 export { AppSidebar } from "./AppSidebar";
-export { AppHeader } from "./AppHeader";
+export { AppHeader } from "./APPheader";
 export { DashboardLayout } from "./DashboardLayout";

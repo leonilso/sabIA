@@ -15,6 +15,8 @@ const materiais = [
 export default function Materiais() {
   return (
     <DashboardLayout title="Turma 6 B - Meus Projetos">
+      <div className="relative min-h-[calc(100vh-200px)] pb-20">
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {materiais.map((material) => (
           <div
@@ -37,11 +39,12 @@ export default function Materiais() {
       </div>
 
       <Button
-        className="fixed bottom-8 right-8 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
       >
         <Plus className="w-5 h-5" />
         Novo Material
       </Button>
+      </div>
     </DashboardLayout>
   );
 }

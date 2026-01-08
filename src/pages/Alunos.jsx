@@ -23,7 +23,6 @@ export default function Alunos() {
         const data = await getTurma(id);
         setNomeTurma(data.turma.nome_turma);
         setAlunos(data.alunos);
-        console.log(data)
       } catch (err) {
         console.error(err);
       }
@@ -64,7 +63,6 @@ export default function Alunos() {
   const salvarTurma = async () => {
     try {
       await enviarTurma(id, nomeTurma, alunos);
-      console.log(isEdit ? "Turma editada" : "Turma criada");
       navigate("/turmas");
     } catch (err) {
       console.error(err);

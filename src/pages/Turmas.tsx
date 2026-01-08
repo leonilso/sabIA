@@ -7,6 +7,7 @@ import { pegarTurmas } from "../services/turmas.service";
 import { apagarTurma } from "@/services/turmas.service";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
+import Loading from "./Loading";
 
 // Mock data for classes
 // const turmas = [
@@ -42,14 +43,13 @@ export default function Turmas() {
     try {
       await apagarTurma(id);
       setTurmas((prevTurmas) => prevTurmas.filter(turma => turma.ID_turma !== id));
-      console.log("Turma apagada");
       
     } catch (err) {
       console.error(err);
     }
   };
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) return <Loading/>;
   return (
     <DashboardLayout title="Minhas Turmas">
       <div className="relative min-h-[calc(100vh-200px)] pb-20">

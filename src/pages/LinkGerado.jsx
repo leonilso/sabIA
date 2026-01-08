@@ -22,7 +22,7 @@ export default function LinkGerado() {
   }
 
   // Construção da URL real para o aluno
-  const urlAlunos = `${window.location.origin}/formulario-aluno/${resultado.public_id}`;
+  const urlAlunos = `${window.location.origin}/formulario-aluno/${resultado.ID}`;
 
   const copiarLink = () => {
     navigator.clipboard.writeText(urlAlunos);
@@ -83,7 +83,7 @@ export default function LinkGerado() {
 
         <div className="pt-4">
           <Button 
-            onClick={() => navigate(`/impressao/${resultado.public_id}`)}
+            onClick={() => navigate(`/impressao/${resultado.ID}`)}
             className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-12 h-12 font-bold w-full"
           >
             Abrir página de Impressão

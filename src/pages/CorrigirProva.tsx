@@ -206,7 +206,6 @@ export default function CorrigirProva() {
           dadosProva.idGabarito,
           blob
         );
-        // console.log(response)
         setResultado(response);
       } catch {
         alert("Erro ao corrigir gabarito");

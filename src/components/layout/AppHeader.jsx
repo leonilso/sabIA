@@ -22,7 +22,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="h-20 bg-sidebar flex items-center justify-between px-6 rounded-b-3xl shadow-md">
+    <header className="h-20 bg-sidebar flex items-center justify-between px-6 rounded-b-3xl">
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
@@ -59,10 +59,10 @@ export function AppHeader() {
               <span>Meu Perfil</span>
             </DropdownMenuItem>
             
-            <DropdownMenuItem onClick={() => navigate("/configuracoes")}>
+            {/* <DropdownMenuItem onClick={() => navigate("/configuracoes")}>
               <Settings className="mr-2 h-4 w-4" />
               <span>Configurações</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             
             <DropdownMenuSeparator />
             

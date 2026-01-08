@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Plus, X, FileText, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,13 +8,44 @@ import { pegarTurmas } from "../services/turmas.service";
 import { useRef } from "react";
 import { criarProjeto, editarProjeto, pegarProjeto } from "../services/projetos.service";
 import { set } from "date-fns";
+import Loading from "./Loading";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-const disciplinas = ["Matemática", "Português", "História", "Ciências", "Geografia", "Inglês"];
+const disciplinas = [
+  "Língua Portuguesa",
+  "Matemática",
+  "História",
+  "Geografia",
+  "Ciências",
+  "Arte",
+  "Educação Física",
+  "Língua Inglesa",
+  "Ensino Religioso",
+  "Biologia",
+  "Física",
+  "Química",
+  "Sociologia",
+  "Filosofia",
+  "Pensamento Computacional"
+];
 const turmasOptions = ["6º ano", "7º ano", "8º ano", "9º ano", "1º ano EM", "2º ano EM"];
+
+const tiposQuestao = [
+  { id: "descritiva", label: "Descritiva", descricao: "Questões de escrever" },
+  { id: "objetiva", label: "Objetiva", descricao: "Questões de marcar X" },
+  { id: "associativa", label: "Associativa", descricao: "Questões de associar" },
+];
+
 
 export default function ConfigAtividades() {
   const navigate = useNavigate();
   const [disciplina, setDisciplina] = useState("");
+  const [questoes, setQuestoes] = useState({ descritiva: 0, objetiva: 0, associativa: 0 });
   const [turma, setTurma] = useState("");
   const [aulas, setAulas] = useState([]);
   const [novaAula, setNovaAula] = useState("");
@@ -28,6 +59,7 @@ export default function ConfigAtividades() {
   const [camposValidados, setCamposValidados] = useState(false);
   const { id } = useParams();
   const isEdit = id;
+    const [totalQuestoes, setQuantidadeQuestoes] = useState(0);
 
 
 
@@ -35,7 +67,7 @@ export default function ConfigAtividades() {
   useEffect(() => {
     const camposValidos = disciplina && turma && aulas.length > 0 && qtdQuestoes > 0 && qtdProvas;
     setCamposValidados(camposValidos);
-  }, [disciplina,turma, aulas, qtdQuestoes, qtdProvas ]);
+  }, [disciplina, turma, aulas, qtdQuestoes, qtdProvas]);
 
 
   useEffect(() => {
@@ -47,18 +79,19 @@ export default function ConfigAtividades() {
         setTurmas(dataTurmas)
         if (dataTurmas.length > 0 && !turma) {
           const turmaSelecionada = dataTurmas.find((t) => t.ID_turma == idTurma);
-          if(turmaSelecionada){
+          if (turmaSelecionada) {
             setTurma(turmaSelecionada.ID_turma.toString());
           } else {
             setTurma("")
           }
-        } 
+        }
 
         // Se for edição, carrega o projeto também
         if (isEdit) {
           const dataProj = await pegarProjeto(id);
           setDisciplina(dataProj.disciplina);
           setTurma(dataProj.ID_turma.toString());
+          setQuestoes({ descritiva: dataProj.questoes_descritivas, objetiva: dataProj.questoes_objetivas, associativa: dataProj.questoes_associativas })
           setAulas(dataProj.temas || []);
           setQtdProvas(dataProj.QTD_provas); // Verifique se é QTD_provas ou qtdProvas
           setQtdQuestoes(dataProj.QTD_questoes);
@@ -71,7 +104,24 @@ export default function ConfigAtividades() {
     }
     carregarTudo();
   }, [id, isEdit]);
-  
+
+
+  useEffect(() => {
+    const totQuestoes = Object.values(questoes).reduce(
+    (acc, v) => acc + v,
+    0
+  );
+    setQuantidadeQuestoes(totQuestoes);
+  }, [questoes]);
+
+  useEffect(() => {
+    if(totalQuestoes > qtdQuestoes){
+
+      setQuestoes({ descritiva: 0, objetiva: 0, associativa: 0 });
+    }
+  }, [qtdQuestoes]);
+
+
   // useEffect(() => {
   //   async function carregar() {
   //     try {
@@ -111,7 +161,6 @@ export default function ConfigAtividades() {
     const file = e.target.files[0];
     if (file) {
       setMaterial(file); // Salva o arquivo (PDF/Doc) no estado
-      console.log("Arquivo selecionado:", file.name);
     }
   };
 
@@ -134,16 +183,17 @@ export default function ConfigAtividades() {
         disciplina,
         turma,
         aulas,
+        questoes,
         qtdProvas,
         qtdQuestoes,
         material
       };
       let resultado;
-      if(!isEdit){
+      if (!isEdit) {
         resultado = await criarProjeto(dadosParaEnviar);
-        navigate(`/projetos/turma/${resultado.ID_turma}/projeto/${resultado.ID}/link-gerado`, { 
-          state: { resultado } 
-        }); 
+        navigate(`/projetos/turma/${resultado.ID_turma}/projeto/${resultado.ID}/link-gerado`, {
+          state: { resultado }
+        });
       } else {
         resultado = await editarProjeto(id, dadosParaEnviar);
         navigate(`/projetos/turma/${resultado.ID_turma}`)
@@ -157,7 +207,7 @@ export default function ConfigAtividades() {
   };
 
   const cancelar = () => {
-    if(turma){
+    if (turma) {
       navigate(`/projetos/turma/${turma}`)
     } else {
       navigate(`/projetos`)
@@ -173,7 +223,7 @@ export default function ConfigAtividades() {
     }
   };
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) return <Loading />
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
       <div className="flex items-center gap-3 mb-8">
@@ -216,26 +266,113 @@ export default function ConfigAtividades() {
         </Select>
 
         <div className="flex gap-0 w-full">
-        {/* Input para Quantidade de Provas */}
-        <input
-          type="number"
-          placeholder="Provas"
-          min="1"
-          value={qtdProvas}
-          className="bg-primary text-primary-foreground border-0 rounded-full h-12 px-4 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-primary-foreground/70"
-          onChange={(e) => setQtdProvas(e.target.value)}
-        />
+          {/* Input para Quantidade de Provas */}
+          <input
+            type="number"
+            placeholder="Provas"
+            min="1"
+            value={qtdProvas}
+            className="bg-primary text-primary-foreground border-0 rounded-full h-12 px-4 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-primary-foreground/70"
+            onChange={(e) => setQtdProvas(e.target.value)}
+          />
 
-        {/* Input para Quantidade de Questões */}
-        <input
-          type="number"
-          placeholder="Questões"
-          min="1"
-          value={qtdQuestoes}
-          className="bg-primary text-primary-foreground border-0 rounded-full h-12 px-4 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-primary-foreground/70"
-          onChange={(e) => setQtdQuestoes(e.target.value)}
-        />
-      </div>
+          {/* Input para Quantidade de Questões */}
+          <input
+            type="number"
+            placeholder="Questões"
+            min="1"
+            value={qtdQuestoes}
+            className="bg-primary text-primary-foreground border-0 rounded-full h-12 px-4 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-primary-foreground/70"
+            onChange={(e) => setQtdQuestoes(e.target.value)}
+          />
+        </div>
+
+{qtdQuestoes > 0 && (
+  <div className="bg-primary rounded-2xl p-4">
+    <h3 className="font-display text-lg font-bold text-primary-foreground mb-2 text-center">
+      Distribua o mínimo de cada tipo de questão
+    </h3>
+    <div className="flex flex-row gap-1 justify-center">
+      {tiposQuestao.map((tipo) => {
+        const valor = questoes[tipo.id] || 0;
+        const min = 0;
+
+        const podeAdicionar = totalQuestoes < qtdQuestoes;
+        const podeRemover = valor > min;
+
+        // Função para lidar com a digitação direta
+        const handleInputChange = (e) => {
+          const novoValor = parseInt(e.target.value) || 0;
+          const diferenca = novoValor - valor;
+
+          // Valida se a alteração manual respeita o limite total e o mínimo
+          if (totalQuestoes + diferenca <= qtdQuestoes && novoValor >= 0) {
+            setQuestoes({
+              ...questoes,
+              [tipo.id]: novoValor,
+            });
+          }
+        };
+
+        return (
+          <div key={tipo.id} className="flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2 bg-muted rounded-full px-3 py-1">
+              <Button
+                size="icon"
+                variant="secondary"
+                className="rounded-full h-8 w-8"
+                disabled={!podeRemover}
+                onClick={() =>
+                  setQuestoes({
+                    ...questoes,
+                    [tipo.id]: valor - 1,
+                  })
+                }
+              >
+                −
+              </Button>
+
+              <input
+                type="text"
+                placeholder={tipo.label}
+                value={valor}
+                onChange={handleInputChange}
+                className="w-10 text-center font-bold text-primary bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+
+              <Button
+                size="icon"
+                className="rounded-full h-8 w-8"
+                disabled={!podeAdicionar}
+                onClick={() =>
+                  setQuestoes({
+                    ...questoes,
+                    [tipo.id]: valor + 1,
+                  })
+                }
+              >
+                +
+              </Button>
+            </div>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-sm font-medium cursor-help">
+                    {tipo.label}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{tipo.descricao}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
 
         {/* Adicionar Aulas */}
         <div className="flex gap-2">
@@ -298,8 +435,8 @@ export default function ConfigAtividades() {
               </span>
               <FileText className={`w-5 h-5 "text-primary"`} />
             </div>
-            
-            <Button 
+
+            <Button
               onClick={() => fileInputRef.current.click()} // Aciona o input escondido
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full gap-2"
             >
@@ -335,7 +472,7 @@ export default function ConfigAtividades() {
           onClick={gerarLink}
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full h-12 font-bold text-lg"
         >
-          {isEdit? "Salvar" : "Criar"}
+          {isEdit ? "Salvar" : "Criar"}
         </Button>
         <Button
           onClick={cancelar}

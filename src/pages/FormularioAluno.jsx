@@ -14,7 +14,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { enviarProjetoAluno, pegarAlunosPorTurma } from "../services/alunos.service"
-import { pegarProjetoPorIdPublico } from "../services/projetos.service";
+import { pegarProjeto } from "../services/projetos.service";
 
 
 
@@ -24,11 +24,6 @@ const tiposQuestao = [
   { id: "associativa", label: "Associativa", descricao: "Questões de associar" },
 ];
 
-const MIN_POR_TIPO = {
-  descritiva: 1,
-  objetiva: 1,
-  associativa: 1,
-};
 
 
 
@@ -143,7 +138,7 @@ export default function FormularioAluno() {
 
   const { idProjeto } = useParams();
   const navigate = useNavigate();
-  const [questoes, setQuestoes] = useState({ descritiva: 2, objetiva: 2, associativa: 2 });
+  const [questoes, setQuestoes] = useState({ descritiva: 0, objetiva: 0, associativa: 0 });
   const [temaSelecionado, setTemaSelecionado] = useState("");
   const [adaptacoes, setAdaptacoes] = useState({ visao: false, dicas: false });
   const [nomeSelecionado, setNomeSelecionado] = useState("");
@@ -152,6 +147,11 @@ export default function FormularioAluno() {
   const [totalQuestoes, setQuantidadeQuestoes] = useState(0);
   const [alunos, setAlunos] = useState([]);
   const [projeto, setProjeto] = useState(vazio);
+  const [MinPorTipo, setMinPorTipo] = useState({
+  descritiva: 0,
+  objetiva: 0,
+  associativa: 0,
+})
 
 
   useEffect(() => {
@@ -171,11 +171,12 @@ export default function FormularioAluno() {
       carregar();
   }, [idProjeto])
 
+
+
   useEffect( () => {
       async function carregar() {
         try {
-          const projetoApi = await pegarProjetoPorIdPublico(idProjeto);
-          console.log(projetoApi)
+          const projetoApi = await pegarProjeto(idProjeto);
           setProjeto(projetoApi);
         } catch (err) {
           console.error("Erro ao carregar projeto", err);
@@ -183,6 +184,19 @@ export default function FormularioAluno() {
       }
       carregar();
   }, [idProjeto])
+
+  useEffect( () => {
+      setMinPorTipo({
+        descritiva: projeto?.questoes_descritivas,
+        objetiva: projeto?.questoes_objetivas,
+        associativa: projeto?.questoes_associativas
+      })
+      setQuestoes({
+        descritiva: projeto?.questoes_descritivas,
+        objetiva: projeto?.questoes_objetivas,
+        associativa: projeto?.questoes_associativas
+      })
+  }, [projeto])
 
   useEffect(() => {
     const totQuestoes = Object.values(questoes).reduce(
@@ -267,7 +281,7 @@ export default function FormularioAluno() {
             </SelectTrigger>
             <SelectContent>
               {alunos.map((aluno) => (
-                <SelectItem key={aluno.ID_aluno} value={aluno.ID_aluno}>{aluno.nome}</SelectItem>
+                <SelectItem key={aluno.ID} value={aluno.ID}>{aluno.nome}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -281,7 +295,7 @@ export default function FormularioAluno() {
           <div className="flex flex-row gap-2 justify-center">
             {tiposQuestao.map((tipo) => {
               const valor = questoes[tipo.id];
-              const min = MIN_POR_TIPO[tipo.id];
+              const min = MinPorTipo[tipo.id];
 
               const podeAdicionar = totalQuestoes < projeto.QTD_questoes;
               const podeRemover = valor > min;
@@ -352,7 +366,18 @@ export default function FormularioAluno() {
             Escolha o tema para a atividade
           </h3>
 
-          <Popover open={openTema} onOpenChange={setOpenTema}>
+          <Select value={temaSelecionado} onValueChange={setTemaSelecionado}>
+            <SelectTrigger className="bg-accent/30 text-primary-foreground border-0 rounded-lg">
+              <SelectValue placeholder="Temas" />
+            </SelectTrigger>
+            <SelectContent>
+              {temas.map((tema) => (
+                <SelectItem key={tema} value={tema}>{tema}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* <Popover open={openTema} onOpenChange={setOpenTema}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
@@ -363,6 +388,8 @@ export default function FormularioAluno() {
                 <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
+
+
 
             <PopoverContent className="w-[--radix-popover-trigger-width] bg-primary bg-accent/30 p-0">
               <Command>
@@ -390,7 +417,7 @@ export default function FormularioAluno() {
                 </CommandGroup>
               </Command>
             </PopoverContent>
-          </Popover>
+          </Popover> */}
         </div>
 
       

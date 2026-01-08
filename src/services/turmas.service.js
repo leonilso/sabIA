@@ -25,7 +25,6 @@ export async function  enviarTurma( id, nome, alunos) {
         nome: nome,
         alunos: alunos
     }
-    console.log(turma)
       // edição
       const { data } = await api.put(`/turmas/${turma.id}`, turma);
       return data;

@@ -16,10 +16,10 @@ export async function pegarProjeto(id) {
   return response.data;
 }
 
-export async function pegarProjetoPorIdPublico(id) {
-  const response = await api.get(`/projetos/id-publico/${id}`);
-  return response.data;
-}
+// export async function pegarProjetoPorIdPublico(id) {
+//   const response = await api.get(`/projetos/id-publico/${id}`);
+//   return response.data;
+// }
 
 export async function apagarProjeto(id) {
   const response = await api.delete(`/projetos/${id}`);
@@ -32,11 +32,11 @@ export async function criarProjeto(dadosProjeto){
 
   formData.append("disciplina", dadosProjeto.disciplina);
   formData.append("turma", dadosProjeto.turma);
+  formData.append("questoes", JSON.stringify(dadosProjeto.questoes));
   formData.append("qtdProvas", dadosProjeto.qtdProvas);
   formData.append("qtdQuestoes", dadosProjeto.qtdQuestoes);
   
   formData.append("temas", JSON.stringify(dadosProjeto.aulas));
-    console.log(JSON.stringify(dadosProjeto.aulas))
   if (dadosProjeto.material) {
     formData.append("pdfBuffer", dadosProjeto.material); 
   }
@@ -51,10 +51,10 @@ export async function criarProjeto(dadosProjeto){
 };
 
 export async function editarProjeto(idProjeto, dadosProjeto){
-  console.log(dadosProjeto)
   const formData = new FormData();
   formData.append("disciplina", dadosProjeto.disciplina);
   formData.append("turma", dadosProjeto.turma);
+  formData.append("questoes", JSON.stringify(dadosProjeto.questoes));
   formData.append("qtdProvas", dadosProjeto.qtdProvas);
   formData.append("qtdQuestoes", dadosProjeto.qtdQuestoes);
   

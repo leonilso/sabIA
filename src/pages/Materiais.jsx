@@ -20,7 +20,7 @@ import Loading from "./Loading"
 
 
 
-export default function Projetos() {
+export default function Materiais() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [projetos, setProjetos] = useState([]);
@@ -89,7 +89,7 @@ export default function Projetos() {
 
   if (loading) return <Loading/>
   return (
-    <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Meus Projetos` : `Meus projetos`}>
+    <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Meus Materiais` : `Meus Materiais`}>
       <div className="relative min-h-[calc(100vh-200px)] pb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
@@ -108,7 +108,7 @@ export default function Projetos() {
               </div>
 
               {/* Centro: Ícone/Letra Representativa */}
-              <div className="flex-1 flex items-center justify-center text-6xl text-primary-foreground/20 font-display font-black mt-4">
+              <div className="flex-1 flex items-center justify-center text-6xl text-primary-foreground/20 font-display font-black">
                 {projeto.disciplina.charAt(0).toUpperCase()}
               </div>
 

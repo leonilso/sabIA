@@ -16,6 +16,17 @@ import NotFound from "../pages/NotFound";
 import CriarConta from "../pages/CriarConta";
 import CorrigirProva from "@/pages/CorrigirProva";
 import Obrigado from "../pages/Obrigado"
+import EmailConfirmado from "../pages/EmailVerificado";
+import VerificarEmail from "../pages/VerificarEmail";
+import EditarProva from "../pages/EditarProva"
+import Planos from "../pages/Planos"
+import SucessoPagamento from "../pages/SucessoPagamento"
+import FracassoPagamento from "../pages/FracassoPagamento"
+import CanceladoPagamento from "../pages/CanceladoPagamento"
+import PremiumRoute from "./PremiumRoute"
+import ComprePremium from "../pages/ComprePremium"
+import Provas from "../pages/Provas"
+import Perfil from "../pages/Perfil"
 
 export default function AppRoutes() {
   return (
@@ -25,6 +36,8 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/criar-conta" element={<CriarConta />} />
       <Route path="/corrigir" element={<CorrigirProva />} />
+      <Route path="/confirmar-email" element={<VerificarEmail />} />
+      <Route path="/email-confirmado" element={<EmailConfirmado />} />
 
       {/* Rotas protegidas */}
       <Route
@@ -35,12 +48,68 @@ export default function AppRoutes() {
           </PrivateRoute>
         }
       />
-
       <Route
+        path="/perfil"
+        element={
+          <PrivateRoute>
+            <Perfil />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/compre-premium"
+        element={
+          <PrivateRoute>
+            <ComprePremium />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/materiais"
+        element={
+          <PrivateRoute>
+            <Materiais />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/provas"
+        element={
+          <PrivateRoute>
+            <Provas />
+          </PrivateRoute>
+        }
+      />
+
+      {/* <Route
         path="/materias"
         element={
           <PrivateRoute>
             <Materias />
+          </PrivateRoute>
+        }
+      /> */}
+      <Route
+        path="/pagamento-sucesso"
+        element={
+          <PrivateRoute>
+            <SucessoPagamento />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/pagamento-fracasso"
+        element={
+          <PrivateRoute>
+            <FracassoPagamento />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/pagamento-cancelado"
+        element={
+          <PrivateRoute>
+            <CanceladoPagamento />
           </PrivateRoute>
         }
       />
@@ -139,6 +208,26 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <PreVisualizacao />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/planos"
+        element={
+          <PrivateRoute>
+            <Planos />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/projeto/:idProjeto/editar-provas"
+        element={
+          <PrivateRoute>
+            <PremiumRoute>
+              <EditarProva />
+            </PremiumRoute>
           </PrivateRoute>
         }
       />

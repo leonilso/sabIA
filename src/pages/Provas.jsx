@@ -1,5 +1,5 @@
 import { DashboardLayout } from "@/components/layout";
-import { Plus, Heart, FileText, List } from "lucide-react";
+import { Plus, Heart, FileText, List, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import Loading from "./Loading"
 
 
 
-export default function Projetos() {
+export default function Provas() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [projetos, setProjetos] = useState([]);
@@ -81,15 +81,12 @@ export default function Projetos() {
   const paginaLink = (projeto) => {
     let resultado = projeto;
     resultado.turma = (turmas.find((t) => t.ID_turma == projeto.ID_turma)).nome_turma
-    navigate(`/projetos/turma/${resultado.ID_turma}/projeto/${resultado.ID}/link-gerado`, { 
-          state: { resultado } 
-        }
-    )
+    navigate(`/impressao/${projeto.ID}`)
   }
 
   if (loading) return <Loading/>
   return (
-    <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Meus Projetos` : `Meus projetos`}>
+    <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Minhas Provas` : `Minhas Provas`}>
       <div className="relative min-h-[calc(100vh-200px)] pb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
@@ -109,59 +106,21 @@ export default function Projetos() {
 
               {/* Centro: Ícone/Letra Representativa */}
               <div className="flex-1 flex items-center justify-center text-6xl text-primary-foreground/20 font-display font-black mt-4">
-                {projeto.disciplina.charAt(0).toUpperCase()}
+                <Newspaper className="w-16 h-16" />
               </div>
 
             {/* Link de editar */}
             <Link
-              to={`/projetos/turma/${turma.ID_turma}/projeto/${projeto.ID}/config`}
+              to={`/projeto/${projeto.ID}/editar-provas`}
               onClick={(e) => e.stopPropagation()}
-              className="absolute top-3 right-12 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
+              className="absolute top-3 right-2 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
             >
 
               <Pencil className="w-4 h-4" />
             </Link>
 
-              <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation(); // Impede que o clique no botão abra a turma
-                if (confirm("Deseja realmente excluir este projeto? Isso não poderá ser desfeito")) {
-                  removerProjeto(projeto.ID);
-                }
-              }}
 
               
-              // Mudamos 'right-3' para 'right-14' para ele ficar ao lado do editar
-              className="absolute top-3 right-3 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
-              title="Apagar Turma"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-
-            <Link
-              to={`/impressao/${projeto.ID}`}
-              onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2 right-2 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
-              title="Imprimir"
-            >
-
-              <Printer className="w-4 h-4" />
-            </Link>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                paginaLink(projeto)
-              }}
-              className="absolute bottom-2 right-12 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
-              title="Link Projeto"
-            >
-              <Link2 className="w-4 h-4" />
-            </button>
 
               {/* Informações Inferiores */}
               <div className="mt-2">
@@ -200,7 +159,7 @@ export default function Projetos() {
       >
          <Link to={`/projetos/turma/${id ? id : 0}/projeto/novo/config`}>
           <Plus className="w-5 h-5" />
-          Novo Projeto
+          Novo Prova
         </Link>
 
       </Button>  : 
@@ -211,7 +170,7 @@ export default function Projetos() {
       >
          <Link to="/turmas">
           <Plus className="w-5 h-5" />
-          Novo Projeto
+          Nova Prova
         </Link>
 
       </Button> 

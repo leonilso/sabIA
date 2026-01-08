@@ -10,14 +10,14 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, title, subtitle }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-sidebar">
       <AppHeader />
       <div className="flex">
         <AppSidebar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 pt-6 px-6 bg-background rounded-tl-3xl">
           <div className="bg-card rounded-3xl p-6 min-h-[calc(100vh-8rem)] shadow-card">
             {(title || subtitle) && (
-              <div className="mb-6">
+              <div>
                 {title && (
                   <h1 className="font-display text-2xl font-bold text-foreground">{title}</h1>
                 )}

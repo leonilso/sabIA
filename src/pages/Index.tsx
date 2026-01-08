@@ -6,15 +6,15 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl">
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
             <span className="text-2xl">🦜</span>
           </div>
-          <div>
-            <h1 className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</h1>
-            <p className="text-[10px] text-sidebar-foreground/80">Atividades & Provas com I.A</p>
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>
+            <span className="text-[10px] text-sidebar-foreground/80 -mt-1">Atividades & Provas com I.A</span>
           </div>
-        </div>
+        </Link>
         <Button className="bg-primary hover:bg-primary/90" asChild>
           <Link to="/turmas">Acessar Dashboard</Link>
         </Button>

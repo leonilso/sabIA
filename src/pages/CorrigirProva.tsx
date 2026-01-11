@@ -12,6 +12,7 @@ export default function CorrigirProva() {
   const [dadosProva, setDadosProva] = useState<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [loading, setLoading] = useState(false);
   const [resultado, setResultado] = useState<any>(null);
   const [scanning, setScanning] = useState(true);
@@ -26,33 +27,43 @@ export default function CorrigirProva() {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
       });
+streamRef.current = stream; 
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
         setCameraLigada(true);
+        setScanning(true); // Garante que volta a escanear
       }
     } catch (err) {
       console.error("Erro ao acessar câmera", err);
     }
   };
 
-  const stopCamera = () => {
+const stopCamera = () => {
     setCameraLigada(false);
-    const video = videoRef.current;
-    const stream = video?.srcObject as MediaStream;
-    stream?.getTracks().forEach(track => track.stop());
-    if (video) video.srcObject = null;
+    setScanning(false);
+
+    // Parar pelo streamRef (funciona mesmo se o vídeo sumiu da tela)
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
+    // Limpa o elemento de vídeo se ele ainda existir
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
   };
 
 
   useEffect(() => {
-    // startCamera();
+
     return () => {
       stopCamera();
     };
   }, []);
 
-  // 1. Sincroniza os dados da URL com o estado da aplicação
   useEffect(() => {
     const idProjeto = searchParams.get('p');
     const idAluno = searchParams.get('a');
@@ -76,7 +87,6 @@ export default function CorrigirProva() {
   }, [dadosProva]);
 
 
-  // 2. Loop de Escaneamento de QR Code
   useEffect(() => {
     let animFrame: number;
 
@@ -99,7 +109,6 @@ export default function CorrigirProva() {
               const url = new URL(code.data);
               const novosParams = new URLSearchParams(url.search);
 
-              // Só atualiza se for uma página ou aluno diferente para evitar loops
               if (novosParams.get('pg') !== searchParams.get('pg') ||
                 novosParams.get('a') !== searchParams.get('a')) {
 
@@ -108,7 +117,7 @@ export default function CorrigirProva() {
                 console.log("QR Code detectado e parâmetros atualizados!");
               }
             } catch (e) {
-              // Não era uma URL válida, ignora
+
             }
           }
         }
@@ -145,56 +154,10 @@ export default function CorrigirProva() {
         console.log("QR da imagem detectado e params atualizados");
       }
     } catch {
-      // QR não era URL → ignora
     }
   };
 
 
-  // 3. Iniciar Câmera
-  // useEffect(() => {
-  //   async function iniciarCamera() {
-  //     try {
-  //       const stream = await navigator.mediaDevices.getUserMedia({
-  //         video: { facingMode: "environment" },
-  //       });
-  //       if (videoRef.current) videoRef.current.srcObject = stream;
-  //     } catch (err) {
-  //       console.error("Erro ao acessar câmera", err);
-  //     }
-  //   }
-  //   iniciarCamera();
-  // }, []);
-
-  // const tirarFoto = async () => {
-  //   if (!videoRef.current || !canvasRef.current || !dadosProva) return;
-
-  //   const canvas = canvasRef.current;
-  //   const video = videoRef.current;
-
-  //   // Pausa o scanner enquanto processa a correção
-  //   setScanning(false);
-  //   setLoading(true);
-
-  //   canvas.toBlob(async (blob) => {
-  //     if (!blob) return;
-
-  //     try {
-  //       const response = await corrigirGabarito(
-  //         dadosProva.idProjeto,
-  //         dadosProva.idAluno,
-  //         dadosProva.pagina,
-  //         dadosProva.idGabarito,
-  //         blob,
-  //       );
-  //       setResultado(response);
-  //     } catch (err) {
-  //       alert("Erro ao corrigir gabarito");
-  //     } finally {
-  //       setLoading(false);
-  //       setScanning(true); // Reativa o scanner após terminar
-  //     }
-  //   }, "image/jpeg", 0.90);
-  // };
 
   const tirarFoto = async () => {
     if (!canvasRef.current || !dadosProva) return;
@@ -226,6 +189,8 @@ export default function CorrigirProva() {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    stopCamera();
 
     setScanning(false);
     setLoadingCanvas(true);
@@ -262,7 +227,6 @@ export default function CorrigirProva() {
 
   const removerFoto = async () => {
     setpaginaCorrigir(null);
-    // Isso "reseta" o input para que ele aceite o mesmo arquivo novamente
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -282,9 +246,8 @@ export default function CorrigirProva() {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
 
-        // ⬇️ LÊ O QR APÓS DESENHAR
         lerQRCodeDoCanvas();
-        setLoadingCanvas(false); // ⬅️ loading OFF
+        setLoadingCanvas(false);
       };
       img.src = URL.createObjectURL(file);
     }
@@ -295,7 +258,6 @@ export default function CorrigirProva() {
   };
 
   const getAlternativa = (questao, letra) => {
-    // console.log(questao?.alternativas?.find(item => item.alternativa === letra))
 
     return questao?.alternativas?.find(item => item.alternativa === letra)?.conteudo;
   };
@@ -335,44 +297,8 @@ export default function CorrigirProva() {
 
   const letraPorIndice = (i) => ["A", "B", "C", "D", "E"][i];
 
-  // const startCamera = async () => {
-  //   try {
-  //     const stream = await navigator.mediaDevices.getUserMedia({
-  //       video: { facingMode: "environment" },
-  //     });
-  //     if (videoRef.current) {
-  //       videoRef.current.srcObject = stream;
-  //       await videoRef.current.play();
-  //     }
-  //   } catch (err) {
-  //     console.error("Erro ao acessar câmera", err);
-  //   }
-  // };
-
-  // const stopCamera = () => {
-  //   const video = videoRef.current;
-  //   const stream = video?.srcObject as MediaStream;
-  //   stream?.getTracks().forEach(track => track.stop());
-  //   if (video) video.srcObject = null;
-  // };
-
-
   return (
     <DashboardLayout>
-      {/* <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl mb-4">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-2xl">🦜</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>
-            <span className="text-[10px] text-sidebar-foreground/80 -mt-1">Atividades & Provas com I.A</span>
-          </div>
-        </Link>
-        <Button className="bg-primary hover:bg-primary/90" asChild>
-          <Link to="/turmas">Acessar Dashboard</Link>
-        </Button>
-      </header> */}
 
       <div className="max-w-md mx-auto space-y-4 p-4">
 

@@ -8,7 +8,7 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+          <div className="p-2 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
             <img
               src={sabia}
               alt="logo"

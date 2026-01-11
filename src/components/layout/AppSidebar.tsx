@@ -54,7 +54,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Users, FolderKanban, Newspaper, Crown, Menu } from "lucide-react";
+import { Users, FolderKanban, Newspaper, Crown, Menu, Focus} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -62,6 +62,7 @@ const menuItems = [
   { icon: Users, label: "Turmas", path: "/turmas" },
   { icon: FolderKanban, label: "Meus Projetos", path: "/projetos" },
   { icon: Newspaper, label: "Minhas Provas", path: "/provas" },
+  { icon: Focus, label: "Corrigir provas", path: "/corrigir" },
 ];
 
 export function AppSidebar() {

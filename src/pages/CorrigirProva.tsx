@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { corrigirGabarito } from "@/services/gabarito.service";
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import jsQR from "jsqr"; // Biblioteca leve para ler os pixels do canvas
 import { Plus, X, FileText, Link as LinkIcon } from "lucide-react";
 import { pegarAluno } from "../services/alunos.service";
@@ -55,18 +55,18 @@ export default function CorrigirProva() {
     setDadosProva({ idProjeto, idAluno, pagina, idGabarito });
   }, [searchParams]);
 
-  useEffect( () => {
-      async function carregar() {
-        try {
-          if(dadosProva.idAluno){
-            const alunosApi = await pegarAluno(dadosProva.idAluno);
-            setDadosAluno(alunosApi);
-          }
-        } catch (err) {
-          console.error("Erro ao carregar alunos", err);
-        } 
+  useEffect(() => {
+    async function carregar() {
+      try {
+        if (dadosProva.idAluno) {
+          const alunosApi = await pegarAluno(dadosProva.idAluno);
+          setDadosAluno(alunosApi);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar alunos", err);
       }
-      carregar();
+    }
+    carregar();
   }, [dadosProva]);
 
 
@@ -352,10 +352,27 @@ export default function CorrigirProva() {
 
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4">
-      {!paginaCorrigir && (
-        <div
-          className="
+    <>
+      <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl mb-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+            <span className="text-2xl">🦜</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>
+            <span className="text-[10px] text-sidebar-foreground/80 -mt-1">Atividades & Provas com I.A</span>
+          </div>
+        </Link>
+        <Button className="bg-primary hover:bg-primary/90" asChild>
+          <Link to="/turmas">Acessar Dashboard</Link>
+        </Button>
+      </header>
+
+      <div className="max-w-md mx-auto space-y-4 p-4">
+
+        {!paginaCorrigir && (
+          <div
+            className="
     relative
     w-full
     aspect-[210/297]
@@ -364,179 +381,180 @@ export default function CorrigirProva() {
     border-2 border-primary/30
     bg-black
   "
-        >
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
-          {/* Área guia da folha */}
-          <div className="absolute inset-4 border-2 border-dashed border-white/40 pointer-events-none rounded-lg" />
+            {/* Área guia da folha */}
+            <div className="absolute inset-4 border-2 border-dashed border-white/40 pointer-events-none rounded-lg" />
 
-          {/* Label opcional */}
-          <span className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-            Enquadre a folha A4
-          </span>
-        </div>
-      )}
-
-      <div className="relative">
-        <div
-          className={paginaCorrigir ? "relative w-full aspect-[210/297] overflow-hidden rounded-xl border-2 border-primary/30":"relative hidden aspect-[210/297] overflow-hidden rounded-xl border-2 border-primary/30" }
-        >
-          <canvas
-            ref={canvasRef}
-            className={paginaCorrigir ? "w-full" : "hidden"}
-          />
-
-          {/* Área guia da folha */}
-          <div className="absolute inset-4 border-2 border-dashed border-white/40 pointer-events-none rounded-lg" />
-        </div>
-
-        {loadingCanvas && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg">
-            <div className="flex flex-col items-center gap-2 text-white">
-              <div className="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent" />
-              <span className="text-sm">Carregando imagem…</span>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="text-center">
-        {dadosProva && (
-          <p className="text-sm text-muted-foreground font-medium">
-          Aluno {dadosAluno ? dadosAluno.nome : "Prova padrão"} | Pág: {dadosProva.pagina}
-          </p>
-        )}
-      </div>
-      <Button onClick={tirarFoto} disabled={loading || !dadosProva} className="w-full h-12">
-        {loading ? "Processando Gabarito..." : "Corrigir Esta Página"}
-      </Button>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        className="hidden"
-      />
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground rounded-full text-sm">
-              {paginaCorrigir ? 
-              <>
-                <div className="flex items-center justify-between bg-primary p-2 px-4 rounded-full border border-dashed border-primary">
-                  <span className="text-sm text-secondary-foreground truncate max-w-[200px]">{paginaCorrigir.name}</span>
-                  <button onClick={() => removerFoto()} className="text-destructive hover:scale-110">
-                    <X className="ml-1 mt-1 w-4 h-4" />
-                  </button>
-                </div>
-              </> :  "Adicionar foto gabarito"
-              
-              }
+            {/* Label opcional */}
+            <span className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+              Enquadre a folha A4
             </span>
           </div>
+        )}
 
-          <Button
-            onClick={() => fileInputRef.current.click()} // Aciona o input escondido
-            className="bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full gap-2"
+        <div className="relative">
+          <div
+            className={paginaCorrigir ? "relative w-full aspect-[210/297] overflow-hidden rounded-xl border-2 border-primary/30" : "relative hidden aspect-[210/297] overflow-hidden rounded-xl border-2 border-primary/30"}
           >
-            <Plus className="w-4 h-4" />
-            {paginaCorrigir ? "Trocar" : "Adicionar"}
-          </Button>
-        </div>
+            <canvas
+              ref={canvasRef}
+              className={paginaCorrigir ? "w-full" : "hidden"}
+            />
 
-        {/* Feedback visual do arquivo selecionado */}
-
-      </div>
-
-      {resultado && (
-        <div className="space-y-4">
-          {/* Resumo */}
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-            <p className="text-xs uppercase font-bold text-green-700">Resultado</p>
-            <p className="text-2xl font-black text-green-900">{resultado.nota} pts</p>
-            <p className="text-sm text-green-800">
-              Acertos: {resultado.acertos} / {resultado.totalAuto}
-            </p>
+            {/* Área guia da folha */}
+            <div className="absolute inset-4 border-2 border-dashed border-white/40 pointer-events-none rounded-lg" />
           </div>
 
-          {/* Questões corrigidas */}
-          {resultado.detalhes.map((det) => {
-            const questao = getQuestaoInfo(det.idQuestao);
-            if (!questao) return null;
+          {loadingCanvas && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg">
+              <div className="flex flex-col items-center gap-2 text-white">
+                <div className="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent" />
+                <span className="text-sm">Carregando imagem…</span>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="text-center">
+          {dadosProva && (
+            <p className="text-sm text-muted-foreground font-medium">
+              Aluno {dadosAluno ? dadosAluno.nome : "Prova padrão"} | Pág: {dadosProva.pagina}
+            </p>
+          )}
+        </div>
+        <Button onClick={tirarFoto} disabled={loading || !dadosProva} className="w-full h-12">
+          {loading ? "Processando Gabarito..." : "Corrigir Esta Página"}
+        </Button>
 
-            return (
-              <div
-                key={det.idQuestao}
-                className={`border rounded-lg p-4 space-y-2 ${det.acertou ? "border-green-300 bg-green-50" : "border-red-300 bg-red-50"
-                  }`}
-              >
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-sm">
-                    Questão {det.numeroQuestao}
-                  </span>
-                  <span
-                    className={`text-xs font-bold ${det.acertou ? "text-green-700" : "text-red-700"
-                      }`}
-                  >
-                    {det.acertou ? "ACERTOU" : "ERROU"}
-                  </span>
-                </div>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          className="hidden"
+        />
 
-                {/* Enunciado */}
-                <p className="text-sm font-medium">{questao.pergunta}</p>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground rounded-full text-sm">
+                {paginaCorrigir ?
+                  <>
+                    <div className="flex items-center justify-between bg-primary p-2 px-4 rounded-full border border-dashed border-primary">
+                      <span className="text-sm text-secondary-foreground truncate max-w-[200px]">{paginaCorrigir.name}</span>
+                      <button onClick={() => removerFoto()} className="text-destructive hover:scale-110">
+                        <X className="ml-1 mt-1 w-4 h-4" />
+                      </button>
+                    </div>
+                  </> : "Adicionar foto gabarito"
 
-                {/* Respostas */}
-                {questao.tipo === "objetiva" && (
-                  <div className="text-sm space-y-1">
-                    {det.acertou ? <>
-                      <p>
-                        <strong>Resposta correta:</strong>{" "}
-                        <span className={"text-green-700"}>
-                          {`${det.detectada}) - ${getAlternativa(questao, det.detectada)}`}
-                        </span>
-                      </p>
-                    </>
+                }
+              </span>
+            </div>
 
-                      : <>
+            <Button
+              onClick={() => fileInputRef.current.click()} // Aciona o input escondido
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              {paginaCorrigir ? "Trocar" : "Adicionar"}
+            </Button>
+          </div>
+
+          {/* Feedback visual do arquivo selecionado */}
+
+        </div>
+
+        {resultado && (
+          <div className="space-y-4">
+            {/* Resumo */}
+            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+              <p className="text-xs uppercase font-bold text-green-700">Resultado</p>
+              <p className="text-2xl font-black text-green-900">{resultado.nota} pts</p>
+              <p className="text-sm text-green-800">
+                Acertos: {resultado.acertos} / {resultado.totalAuto}
+              </p>
+            </div>
+
+            {/* Questões corrigidas */}
+            {resultado.detalhes.map((det) => {
+              const questao = getQuestaoInfo(det.idQuestao);
+              if (!questao) return null;
+
+              return (
+                <div
+                  key={det.idQuestao}
+                  className={`border rounded-lg p-4 space-y-2 ${det.acertou ? "border-green-300 bg-green-50" : "border-red-300 bg-red-50"
+                    }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-sm">
+                      Questão {det.numeroQuestao}
+                    </span>
+                    <span
+                      className={`text-xs font-bold ${det.acertou ? "text-green-700" : "text-red-700"
+                        }`}
+                    >
+                      {det.acertou ? "ACERTOU" : "ERROU"}
+                    </span>
+                  </div>
+
+                  {/* Enunciado */}
+                  <p className="text-sm font-medium">{questao.pergunta}</p>
+
+                  {/* Respostas */}
+                  {questao.tipo === "objetiva" && (
+                    <div className="text-sm space-y-1">
+                      {det.acertou ? <>
                         <p>
-                          <strong>Sua resposta:</strong>{" "}
-                          <span className={"text-red-700"}>
+                          <strong>Resposta correta:</strong>{" "}
+                          <span className={"text-green-700"}>
                             {`${det.detectada}) - ${getAlternativa(questao, det.detectada)}`}
                           </span>
                         </p>
-                        <p>
-                          <strong>Resposta correta:</strong>{" "}
-                          {`${det.correta}) - ${getAlternativa(questao, det.correta)}`}
-                        </p>
                       </>
 
-                    }
+                        : <>
+                          <p>
+                            <strong>Sua resposta:</strong>{" "}
+                            <span className={"text-red-700"}>
+                              {`${det.detectada}) - ${getAlternativa(questao, det.detectada)}`}
+                            </span>
+                          </p>
+                          <p>
+                            <strong>Resposta correta:</strong>{" "}
+                            {`${det.correta}) - ${getAlternativa(questao, det.correta)}`}
+                          </p>
+                        </>
 
-                  </div>
-                )}
+                      }
 
-                {questao.tipo === "descritiva" && (
-                  <p className="text-sm italic text-muted-foreground">
-                    Questão descritiva (correção manual)
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+                    </div>
+                  )}
 
-      {!dadosProva && (
-        <p className="text-xs text-center text-muted-foreground animate-pulse">
-          Aponte para o QR Code no topo da página...
-        </p>
-      )}
-    </div>
+                  {questao.tipo === "descritiva" && (
+                    <p className="text-sm italic text-muted-foreground">
+                      Questão descritiva (correção manual)
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!dadosProva && (
+          <p className="text-xs text-center text-muted-foreground animate-pulse">
+            Aponte para o QR Code no topo da página...
+          </p>
+        )}
+      </div>
+    </>
   );
 }

@@ -35,7 +35,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Index />}/>
       <Route path="/login" element={<Login />} />
       <Route path="/criar-conta" element={<CriarConta />} />
-      <Route path="/corrigir" element={<CorrigirProva />} />
+      
       <Route path="/confirmar-email" element={<VerificarEmail />} />
       <Route path="/email-confirmado" element={<EmailConfirmado />} />
 
@@ -56,6 +56,12 @@ export default function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route path="/corrigir" 
+      element={
+        <PrivateRoute>
+          <CorrigirProva />
+        </PrivateRoute>
+        } />
       <Route
         path="/compre-premium"
         element={

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, FileText, Users, Crown } from "lucide-react";
+import sabia from "../assets/sabia.png"
 
 export default function Index() {
   return (
@@ -8,7 +9,11 @@ export default function Index() {
       <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-2xl">🦜</span>
+            <img
+              src={sabia}
+              alt="logo"
+              className="overflow-hidden rounded-full"
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>

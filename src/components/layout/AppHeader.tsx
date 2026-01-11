@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"; // Verifique se o caminho no seu projeto é este
 import { AuthContext } from "../../contexts/AuthContext";
+import sabia from "../../assets/sabiaNoEscritaBranco.png"
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -25,8 +26,12 @@ export function AppHeader() {
 <header className="w-full h-20 bg-sidebar flex items-center justify-between px-6 rounded-b-3xl">
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-2xl">🦜</span>
+          <div className="w-12 h-12 bg-primary p-2 rounded-full flex items-center justify-center">
+            <img
+              src={sabia}
+              alt="logo"
+              className="overflow-hidden rounded-full"
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>

@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { enviarProjetoAluno, pegarAlunosPorTurma } from "../services/alunos.service"
 import { pegarProjeto } from "../services/projetos.service";
-
+import sabia from "../assets/sabiaNoEscrita.png"
 
 
 const tiposQuestao = [
@@ -235,12 +235,15 @@ export default function FormularioAluno() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-          <span className="text-2xl">🦜</span>
-        </div>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center">
+            <img
+              src={sabia}
+              alt="logo"
+              className="overflow-hidden rounded-full"
+            />        </div>
         <div>
           <h1 className="font-display font-bold text-lg text-primary">SabI.A</h1>
-          <p className="text-[10px] text-muted-foreground">Atividades & Provas com I.A</p>
+          <p className="text-[10px] text-white">Atividades & Provas com I.A</p>
         </div>
       </div>
 

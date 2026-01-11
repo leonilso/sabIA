@@ -4,6 +4,7 @@ import { CircleDollarSign, Zap, Star, Crown, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { pagar } from "../services/pagamento.service"
 import { useState } from "react";
+import sabia from "../assets/sabiaNoEscritaBranco.png"
 
 const planos = [
     {
@@ -85,8 +86,12 @@ export default function Planos() {
         <div className="min-h-screen bg-background">
             <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl">
                 <Link to="/" className="flex items-center gap-2">
-                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                        <span className="text-2xl">🦜</span>
+                    <div className="p-2 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                        <img
+                            src={sabia}
+                            alt="logo"
+                            className="overflow-hidden rounded-full"
+                        />
                     </div>
                     <div className="flex flex-col">
                         <span className="font-display font-bold text-xl text-sidebar-foreground">SabI.A</span>
@@ -128,13 +133,8 @@ export default function Planos() {
                                         }
             `}
                                 >
-                                    {plano.destaque && (
-                                        <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-                                            Mais Popular
-                                        </span>
-                                    )}
 
-                                    <div className="flex items-center gap-3 mb-6">
+                                    <div className={`flex items-center gap-3 mb-6`}>
                                         <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
                                             {plano.icon}
                                         </div>

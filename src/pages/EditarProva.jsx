@@ -320,17 +320,15 @@ export default function EditarProva() {
             <div className="flex flex-col gap-2 items-center justify-between">
 
                     {/* Botão Flutuante de Salvar */}
-                    <div className="w-full px-6 py-4 flex items-center justify-between">
-                        <button
+<div className="w-full px-2 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">                        <button
                             disabled={provaIndex === 0}
                             onClick={() => setProvaIndex(i => i - 1)}
-                            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
+                            className="w-full sm:w-auto px-2 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
                         >
                             ← Anterior
                         </button>
 
-                        <div className="w-full sm:w-auto text-sm text-center">
-                            <p className="font-semibold">
+<div className="w-full sm:w-auto text-sm text-center order-first sm:order-none mb-2 sm:mb-0">                            <p className="font-semibold">
                                 {provaAtual?.aluno?.tipo === "padrao"
                                     ? "Prova Padrão"
                                     : `Aluno: ${provaAtual?.aluno?.nome ? provaAtual?.aluno?.nome : "padrão"}`}
@@ -343,7 +341,7 @@ export default function EditarProva() {
                         <button
                             disabled={provaIndex === provas.length - 1}
                             onClick={() => setProvaIndex(i => i + 1)}
-                            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
+                            className="w-full sm:w-auto px-2 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
                         >
                             Próxima →
                         </button>
@@ -351,10 +349,9 @@ export default function EditarProva() {
                     </div>
 
 
-                {/* <div className="flex-1 overflow-y-auto p-6"> */}
                 <div className="w-full space-y-6 pb-24">
                     {questoes.map((q, qIndex) => (
-                        <div key={q.id || qIndex} className="bg-white border border-border/40 rounded-2xl p-6 shadow-sm mt-2">
+                        <div key={q.id || qIndex} className="bg-white border border-border/40 rounded-2xl p-2 shadow-sm mt-2">
 
                             {/* Header da Questão */}
                             <div className="flex justify-between items-start mb-4">
@@ -373,7 +370,7 @@ export default function EditarProva() {
                             <div className="mb-6">
                                 <label className="text-sm font-medium text-muted-foreground mb-2 block">Enunciado</label>
                                 <textarea
-                                    className="w-full bg-background border-none rounded-xl p-4 focus:ring-2 ring-primary/20 outline-none resize-none"
+                                    className="w-full bg-background border-none rounded-xl p-2 focus:ring-2 ring-primary/20 outline-none resize-none"
                                     rows={3}
                                     value={q.enunciado}
                                     onChange={(e) => atualizarQuestao(qIndex, { enunciado: e.target.value })}
@@ -394,7 +391,7 @@ export default function EditarProva() {
                                             >
                                                 <CheckCircle2 size={24} fill={alt.correta ? 'currentColor' : 'transparent'} />
                                             </button>
-                                            <div className="flex-1 bg-background rounded-lg px-4 py-2 flex flex-row justify-between">
+                                            <div className="flex-1 bg-background rounded-lg px-2 py-2 flex flex-row justify-between">
                                                 <div className="flex flex-row gap-2">
                                                     {/* 
                                                     <p>{alt.alternativa}</p> */}
@@ -428,10 +425,10 @@ export default function EditarProva() {
                                 <div className="space-y-3">
                                     <label className="text-sm font-medium text-muted-foreground mb-2 block">Estas são as associações corretas, na prova do aluno elas serão embaralhadas</label>
                                     {Object.entries(q?.associativa?.resposta).map(([chave, valor], aIndex) => (
-                                        <div key={aIndex} className="flex gap-2">
+                                        <div key={aIndex} className="flex flex-col sm:flex-row gap-2 p-1">
                                             <input
                                                 placeholder="Chave"
-                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-4 py-2 outline-none"
+                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-2 py-2 outline-none"
                                                 value={chave}
                                                 onChange={(e) => {
                                                     atualizarAssociativa(qIndex, chave, e.target.value, valor)
@@ -439,7 +436,7 @@ export default function EditarProva() {
                                             />
                                             <input
                                                 placeholder="Valor"
-                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-4 py-2 outline-none"
+                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-2 py-2 outline-none"
                                                 value={valor}
                                                 onChange={(e) => {
                                                     atualizarAssociativa(qIndex, chave, chave, e.target.value)
@@ -455,7 +452,7 @@ export default function EditarProva() {
                                 <div>
                                     <label className="text-sm font-medium text-muted-foreground mb-2 block">Resposta Esperada</label>
                                     <textarea
-                                        className="w-full bg-background border-none rounded-xl p-4 focus:ring-2 ring-primary/20 outline-none resize-none italic"
+                                        className="w-full bg-background border-none rounded-xl p-2 focus:ring-2 ring-primary/20 outline-none resize-none italic"
                                         rows={2}
                                         value={q?.descritiva?.resposta_correta}
                                         onChange={(e) => editarDescritiva(qIndex, e.target.value)}
@@ -475,10 +472,10 @@ export default function EditarProva() {
                     </button>
                 </div>
                 {/* </div> */}
-                <div className="flex-none p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+                <div className="flex-none p-2 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
                     <div className="max-w-3xl mx-auto flex justify-center">
                         <button
-                            className="bg-primary text-white w-64 p-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
+                            className="bg-primary text-white w-64 p-2 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
                             onClick={() => enviarProvas()}
                         >
                             Salvar Alterações em Todas as Provas
@@ -488,7 +485,7 @@ export default function EditarProva() {
             </div>
             {modalAberto && (
                 <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-                    <div className="bg-background rounded-2xl w-full max-w-lg p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-background rounded-2xl w-full max-w-lg p-2 sm:p-2 max-h-[90vh] overflow-y-auto">
 
                         {/* ETAPA 1 – TIPO */}
                         {!tipoQuestao && (
@@ -603,7 +600,7 @@ export default function EditarProva() {
 
                                     <input
                                         placeholder={`Padrão de resposta`}
-                                        className="w-full rounded-xl p-4 bg-muted"
+                                        className="w-full rounded-xl p-2 bg-muted"
                                         onChange={e => {
                                             setNovaQuestao(q => ({
                                                 ...q,
@@ -616,11 +613,11 @@ export default function EditarProva() {
 
                                 {/* AÇÕES */}
                                 <div className="flex justify-center gap-4 pt-4">                                            <button onClick={() => setModalAberto(false)}
-                                    className="bg-primary text-white px-4 py-2 rounded-xl"
+                                    className="bg-primary text-white px-2 py-2 rounded-xl"
                                 >Cancelar</button>
                                     <button
                                         onClick={confirmarCriacao}
-                                        className="bg-primary text-white px-4 py-2 rounded-xl"
+                                        className="bg-primary text-white px-2 py-2 rounded-xl"
                                     >
                                         Criar Questão
                                     </button>

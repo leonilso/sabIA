@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // baseURL:'http://localhost:3000/api'
-  baseURL:'https://sabia.leonilso.com.br/api'
+  baseURL:'http://localhost:3000/api'
+  // baseURL:'https://sabia.leonilso.com.br/api'
 });
 
 // Adiciona o token em toda requisição

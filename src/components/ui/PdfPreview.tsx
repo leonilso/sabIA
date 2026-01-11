@@ -7,10 +7,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-function PdfPreview({pdfBlobUrl}){
+function PdfPreview({ pdfBlobUrl }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [numPages, setNumPages] = useState(null);
-  
+
   // 1. Criar um estado para a largura e uma referência para o container
   const [containerWidth, setContainerWidth] = useState(null);
   const pdfWrapperRef = useRef(null);
@@ -41,14 +41,7 @@ function PdfPreview({pdfBlobUrl}){
     <div className='w-full flex flex-col items-center'> {/* Adicionei items-center */}
 
       {/* Ajustei o cabeçalho para quebrar linha em telas muito pequenas (flex-wrap) */}
-      <div className="w-full px-6 py-4 flex flex-wrap gap-4 items-center justify-between">
-        <button
-          disabled={pageNumber <= 1}
-          onClick={() => setPageNumber(prev => prev - 1)}
-          className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white min-w-[100px]"
-        >
-          ← Anterior
-        </button>
+      <div className="w-full px-6 py-4 flex gap-2 items-center justify-between flex-col gap-3 w-full">
 
         <div className="text-sm text-center whitespace-nowrap">
           <p className="font-semibold">
@@ -56,18 +49,29 @@ function PdfPreview({pdfBlobUrl}){
           </p>
         </div>
 
-        <button
-          disabled={pageNumber >= numPages}
-          onClick={() => setPageNumber(prev => prev + 1)}
-          className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white min-w-[100px]"
-        >
-          Próxima →
-        </button>
+        <div className="w-full flex flex-row justify-between gap-2">
+          <button
+            disabled={pageNumber <= 1}
+            onClick={() => setPageNumber(prev => prev - 1)}
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white min-w-[100px]"
+          >
+            ← Anterior
+          </button>
+
+
+          <button
+            disabled={pageNumber >= numPages}
+            onClick={() => setPageNumber(prev => prev + 1)}
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white min-w-[100px]"
+          >
+            Próxima →
+          </button>
+        </div>
       </div>
 
       {/* 3. A div container com a referência (ref) */}
-      <div 
-        ref={pdfWrapperRef} 
+      <div
+        ref={pdfWrapperRef}
         className="w-full flex justify-center p-4" // Adicionei padding para não colar na borda
       >
         <Document
@@ -83,7 +87,7 @@ function PdfPreview({pdfBlobUrl}){
             renderAnnotationLayer={false}
             className="rounded-lg overflow-hidden shadow-lg" // Adicionei sombra para destaque
             // 4. A mágica acontece aqui: Passamos a largura dinâmica
-            width={containerWidth ? Math.min(containerWidth, 800) : null} 
+            width={containerWidth ? Math.min(containerWidth, 800) : null}
           />
         </Document>
       </div>

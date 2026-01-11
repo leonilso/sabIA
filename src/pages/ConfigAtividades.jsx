@@ -15,6 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import sabia from "../assets/sabiaNoEscrita.png"
+
 
 const disciplinas = [
   "Língua Portuguesa",
@@ -234,9 +236,14 @@ export default function ConfigAtividades() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center">
-          <span className="text-3xl">🦜</span>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center">
+            <img
+              src={sabia}
+              alt="logo"
+              className="overflow-hidden rounded-full"
+            />       
         </div>
+
         <div>
           <h1 className="font-display font-bold text-xl text-primary">SabI.A</h1>
           <p className="text-xs text-muted-foreground">Atividades & Provas com I.A</p>

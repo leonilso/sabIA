@@ -18,6 +18,7 @@ export default function CorrigirProva() {
   const fileInputRef = useRef(null);
   const [loadingCanvas, setLoadingCanvas] = useState(false);
   const [dadosAluno, setDadosAluno] = useState(null);
+  const [cameraLigada, setCameraLigada] = useState(false);
 
   const startCamera = async () => {
     try {
@@ -27,6 +28,7 @@ export default function CorrigirProva() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
+        setCameraLigada(true);
       }
     } catch (err) {
       console.error("Erro ao acessar câmera", err);
@@ -34,6 +36,7 @@ export default function CorrigirProva() {
   };
 
   const stopCamera = () => {
+    setCameraLigada(false);
     const video = videoRef.current;
     const stream = video?.srcObject as MediaStream;
     stream?.getTracks().forEach(track => track.stop());
@@ -42,8 +45,10 @@ export default function CorrigirProva() {
 
 
   useEffect(() => {
-    startCamera();
-    return stopCamera;
+    // startCamera();
+    return () => {
+      stopCamera();
+    };
   }, []);
 
   // 1. Sincroniza os dados da URL com o estado da aplicação
@@ -382,6 +387,10 @@ export default function CorrigirProva() {
     bg-black
   "
           >
+
+
+
+
             <video
               ref={videoRef}
               autoPlay
@@ -422,6 +431,14 @@ export default function CorrigirProva() {
           )}
         </div>
         <div className="text-center">
+          {cameraLigada == false ?
+            <div className="overlay-permissao">
+              <Button onClick={startCamera} className="mb-2">
+                Ativar Câmera
+              </Button>
+            </div> : <></>
+          }
+
           {dadosProva && (
             <p className="text-sm text-muted-foreground font-medium">
               Aluno {dadosAluno ? dadosAluno.nome : "Prova padrão"} | Pág: {dadosProva.pagina}

@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import jsQR from "jsqr"; // Biblioteca leve para ler os pixels do canvas
 import { Plus, X, FileText, Link as LinkIcon } from "lucide-react";
 import { pegarAluno } from "../services/alunos.service";
+import { DashboardLayout } from "@/components/layout";
 
 export default function CorrigirProva() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -357,8 +358,8 @@ export default function CorrigirProva() {
 
 
   return (
-    <>
-      <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl mb-4">
+    <DashboardLayout>
+      {/* <header className="bg-sidebar py-4 px-6 flex items-center justify-between rounded-b-3xl mb-4">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
             <span className="text-2xl">🦜</span>
@@ -371,7 +372,7 @@ export default function CorrigirProva() {
         <Button className="bg-primary hover:bg-primary/90" asChild>
           <Link to="/turmas">Acessar Dashboard</Link>
         </Button>
-      </header>
+      </header> */}
 
       <div className="max-w-md mx-auto space-y-4 p-4">
 
@@ -572,6 +573,6 @@ export default function CorrigirProva() {
           </p>
         )}
       </div>
-    </>
+    </DashboardLayout>
   );
 }

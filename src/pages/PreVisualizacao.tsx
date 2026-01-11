@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileText, Edit, Download, Crown, ArrowLeft } from "lucide-react";
+import { FileText, Edit, Download, Crown, ArrowLeft, Newspaper } from "lucide-react";
 import { pegarProjeto } from "../services/projetos.service";
 import { gerarProvas, pegarProvas, infoUser } from "../services/impressao.service";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import PdfPreview from "../components/ui/PdfPreview"
+
 
 const vazio = {
   ID_usuario: null,
@@ -26,6 +28,7 @@ const vazio = {
   nome_turma: "",
   temas: [],
 };
+
 
 export default function PreVisualizacao() {
   const { user } = useContext(AuthContext);
@@ -54,20 +57,20 @@ export default function PreVisualizacao() {
   }, [idProjeto]);
 
   useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth < 640) { // Mobile (sm)
-      setZoom(30);
-    } else if (window.innerWidth < 1024) { // Tablet (md/lg)
-      setZoom(60);
-    } else { // Desktop
-      setZoom(65);
-    }
-  };
+    const handleResize = () => {
+      if (window.innerWidth < 640) { // Mobile (sm)
+        setZoom(30);
+      } else if (window.innerWidth < 1024) { // Tablet (md/lg)
+        setZoom(60);
+      } else { // Desktop
+        setZoom(65);
+      }
+    };
 
-  handleResize(); // Executa ao montar
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
-}, []);
+    handleResize(); // Executa ao montar
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function carregar() {
@@ -123,6 +126,22 @@ export default function PreVisualizacao() {
       setLoadingPdf(false);
     }
   }
+
+  async function handleBaixarPdf(){
+  const link = document.createElement('a');
+
+  link.href = url;
+  
+  link.setAttribute('download', `${idProjeto}-gabarito?${imprimirGabarito}.pdf`);
+  
+  document.body.appendChild(link);
+  
+  link.click();
+
+  document.body.removeChild(link);
+  }
+
+
   async function handleEditar() {
     navigate(`/projeto/${projeto?.ID}/editar-provas`)
   }
@@ -144,13 +163,14 @@ export default function PreVisualizacao() {
             </h2>
           </div>
 
-          <div className="bg-muted rounded-xl p-4 aspect-[3/4] flex items-center justify-center mb-6">
+          <div className="bg-muted rounded-xl p-4 flex items-center justify-center mb-2">
             {url ? (
-              <iframe
-                src={`${url}#zoom=${zoom}`}
-                title="Preview PDF"
-                className="w-full h-full rounded-lg bg-white"
-              />
+            <PdfPreview pdfBlobUrl={url}/>
+// <iframe
+              //   src={`${url}#zoom=${zoom}`}
+              //   title="Preview PDF"
+              //   className="w-full h-full rounded-lg bg-white"
+              // />
             ) : (
               <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm text-xs">
                 <div className="border-b pb-2 mb-4">
@@ -183,8 +203,16 @@ export default function PreVisualizacao() {
               disabled={loadingPdf}
               className="flex-1 rounded-full h-12"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Newspaper className="w-4 h-4 mr-2" />
               {loadingPdf ? "Gerando..." : "Gerar PDF"}
+            </Button>
+            <Button
+              onClick={handleBaixarPdf}
+              disabled={loadingPdf && url != ""}
+              className="flex-1 rounded-full h-12 bg-sidebar"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              {loadingPdf && !url ? "Gerando..." : "Baixar PDF"}
             </Button>
           </div>
         </div>

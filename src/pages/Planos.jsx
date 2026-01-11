@@ -166,7 +166,7 @@ export default function Planos() {
                                             ? "bg-secondary hover:bg-secondary/90"
                                             : "bg-primary hover:bg-primary/90"
                                             }`}
-                                        disable={carregando}
+                                        disabled={carregando}
 
                                     >
                                         {plano.nome === "Free Tier" ? "Começar Grátis" : carregando && nomePlano == plano.nome ? "Carregando" : "Assinar Plano"}

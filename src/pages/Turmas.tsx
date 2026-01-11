@@ -55,7 +55,7 @@ export default function Turmas() {
       <div className="relative min-h-[calc(100vh-200px)] pb-20">
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {!turmas.length ? (<p className="w-max">Parece que você não tem nenhuma turma que tal criar uma agora</p> ): (
+        {!turmas.length ? (<p className="max-w-full">Parece que você não tem nenhuma turma que tal criar uma agora</p> ): (
         <>
         {turmas.map((turma) => (
         <Link

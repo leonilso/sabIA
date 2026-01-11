@@ -22,7 +22,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="h-20 bg-sidebar flex items-center justify-between px-6 rounded-b-3xl">
+<header className="w-full h-20 bg-sidebar flex items-center justify-between px-6 rounded-b-3xl">
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
@@ -37,7 +37,7 @@ export function AppHeader() {
 
       <div className="flex-1 px-8 max-w-2xl">
         <p className="text-center text-sm italic text-sidebar-foreground/90 font-medium line-clamp-2">
-          "Você inspira. Eles escolhem. SabI.A transforma cada prova em uma descoberta personalizada — onde o professor guia e o aluno cria."
+          SabI.A crie!
         </p>
       </div>
 

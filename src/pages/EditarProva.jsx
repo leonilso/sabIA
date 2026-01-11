@@ -317,43 +317,42 @@ export default function EditarProva() {
 
     return (
         <DashboardLayout title="Editar Prova">
-            {/* CONTROLE DE PROVAS */}
-            <div className="h-12">
-                {/* Botão Flutuante de Salvar */}
-                <div className="max-w-[35vw] mx-auto px-4 py-1 flex items-center justify-between">
+            <div className="flex flex-col gap-2 items-center justify-between">
 
-                    <button
-                        disabled={provaIndex === 0}
-                        onClick={() => setProvaIndex(i => i - 1)}
-                        className="px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
-                    >
-                        ← Anterior
-                    </button>
+                    {/* Botão Flutuante de Salvar */}
+                    <div className="w-full px-6 py-4 flex items-center justify-between">
+                        <button
+                            disabled={provaIndex === 0}
+                            onClick={() => setProvaIndex(i => i - 1)}
+                            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
+                        >
+                            ← Anterior
+                        </button>
 
-                    <div className="text-sm text-center">
-                        <p className="font-semibold">
-                            {provaAtual?.aluno?.tipo === "padrao"
-                                ? "Prova Padrão"
-                                : `Aluno: ${provaAtual?.aluno?.nome ? provaAtual?.aluno?.nome : "padrão"}`}
-                        </p>
-                        <p className="text-muted-foreground">
-                            Prova {provaIndex + 1} de {provas.length}
-                        </p>
+                        <div className="w-full sm:w-auto text-sm text-center">
+                            <p className="font-semibold">
+                                {provaAtual?.aluno?.tipo === "padrao"
+                                    ? "Prova Padrão"
+                                    : `Aluno: ${provaAtual?.aluno?.nome ? provaAtual?.aluno?.nome : "padrão"}`}
+                            </p>
+                            <p className="text-muted-foreground">
+                                Prova {provaIndex + 1} de {provas.length}
+                            </p>
+                        </div>
+
+                        <button
+                            disabled={provaIndex === provas.length - 1}
+                            onClick={() => setProvaIndex(i => i + 1)}
+                            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
+                        >
+                            Próxima →
+                        </button>
+
                     </div>
 
-                    <button
-                        disabled={provaIndex === provas.length - 1}
-                        onClick={() => setProvaIndex(i => i + 1)}
-                        className="px-4 py-2 rounded-lg bg-primary disabled:opacity-40 text-white"
-                    >
-                        Próxima →
-                    </button>
 
-                </div>
-            </div>
-
-            <div className="h-[70vh] flex flex-col">
-                <div className="flex-1 overflow-y-auto min-h-0 space-y-8 pb-20">
+                {/* <div className="flex-1 overflow-y-auto p-6"> */}
+                <div className="w-full space-y-6 pb-24">
                     {questoes.map((q, qIndex) => (
                         <div key={q.id || qIndex} className="bg-white border border-border/40 rounded-2xl p-6 shadow-sm mt-2">
 
@@ -401,7 +400,7 @@ export default function EditarProva() {
                                                     <p>{alt.alternativa}</p> */}
                                                     <input
                                                         type="text"
-                                                        className="bg-background border-none focus:ring-1 ring-primary/30 outline-none"
+                                                        className="flex-1 flex justify-between bg-background border-none focus:ring-1 ring-primary/30 outline-none"
                                                         value={alt.conteudo}
                                                         onChange={(e) => {
                                                             editarAlternativa(qIndex, altIndex, e.target.value);
@@ -432,7 +431,7 @@ export default function EditarProva() {
                                         <div key={aIndex} className="flex gap-2">
                                             <input
                                                 placeholder="Chave"
-                                                className="flex-1 bg-background border-none rounded-lg px-4 py-2 outline-none"
+                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-4 py-2 outline-none"
                                                 value={chave}
                                                 onChange={(e) => {
                                                     atualizarAssociativa(qIndex, chave, e.target.value, valor)
@@ -440,7 +439,7 @@ export default function EditarProva() {
                                             />
                                             <input
                                                 placeholder="Valor"
-                                                className="flex-1 bg-background border-none rounded-lg px-4 py-2 outline-none"
+                                                className="flex-1 min-w-0 bg-background border-none rounded-lg px-4 py-2 outline-none"
                                                 value={valor}
                                                 onChange={(e) => {
                                                     atualizarAssociativa(qIndex, chave, chave, e.target.value)
@@ -474,171 +473,163 @@ export default function EditarProva() {
                     >
                         <Plus size={20} /> Nova Questão
                     </button>
-                    {modalAberto && (
-                        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-                            <div className="bg-background rounded-2xl w-full max-w-lg p-6 space-y-4">
+                </div>
+                {/* </div> */}
+                <div className="flex-none p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+                    <div className="max-w-3xl mx-auto flex justify-center">
+                        <button
+                            className="bg-primary text-white w-64 p-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
+                            onClick={() => enviarProvas()}
+                        >
+                            Salvar Alterações em Todas as Provas
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {modalAberto && (
+                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+                    <div className="bg-background rounded-2xl w-full max-w-lg p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
 
-                                {/* ETAPA 1 – TIPO */}
-                                {!tipoQuestao && (
-                                    <>
-                                        <h2 className="font-bold text-lg">Tipo da Questão</h2>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            {["objetiva", "associativa", "descritiva"].map(t => (
-                                                <button
-                                                    key={t}
-                                                    onClick={() => setTipoQuestao(t)}
-                                                    className="bg-primary text-white w-full py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
-                                                >
-                                                    {t}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </>
-                                )}
+                        {/* ETAPA 1 – TIPO */}
+                        {!tipoQuestao && (
+                            <>
+                                <h2 className="font-bold text-lg">Tipo da Questão</h2>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {["objetiva", "associativa", "descritiva"].map(t => (
+                                        <button
+                                            key={t}
+                                            onClick={() => setTipoQuestao(t)}
+                                            className="bg-primary text-white w-full py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
+                                        >
+                                            {t}
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
 
-                                {/* ETAPA 2 – CONTEÚDO */}
-                                {tipoQuestao && (
-                                    <>
-                                        <h2 className="font-bold text-lg capitalize">{tipoQuestao}</h2>
+                        {/* ETAPA 2 – CONTEÚDO */}
+                        {tipoQuestao && (
+                            <>
+                                <h2 className="font-bold text-lg capitalize">{tipoQuestao}</h2>
 
-                                        <textarea
-                                            placeholder="Enunciado"
-                                            className="w-full rounded-xl p-3 bg-muted"
-                                            value={novaQuestao.enunciado}
-                                            onChange={e =>
-                                                setNovaQuestao(q => ({ ...q, enunciado: e.target.value }))
-                                            }
-                                        />
+                                <textarea
+                                    placeholder="Enunciado"
+                                    className="w-full rounded-xl p-3 bg-muted"
+                                    value={novaQuestao.enunciado}
+                                    onChange={e =>
+                                        setNovaQuestao(q => ({ ...q, enunciado: e.target.value }))
+                                    }
+                                />
 
-                                        {/* OBJETIVA */}
-                                        {tipoQuestao === "objetiva" &&
-                                            novaQuestao.objetiva.alternativas.map((alt, i) => (
-                                                <div key={i} className="flex items-center gap-2">
-                                                    {/* Checkbox exclusivo */}
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={alt.correta}
-                                                        onChange={() => {
-                                                            const novas = novaQuestao.objetiva.alternativas.map((a, index) => ({
-                                                                ...a,
-                                                                correta: index === i, // só a marcada fica true
-                                                            }));
-
-                                                            setNovaQuestao(q => ({
-                                                                ...q,
-                                                                objetiva: { alternativas: novas }
-                                                            }));
-                                                        }}
-                                                    />
-
-                                                    {/* Conteúdo da alternativa */}
-                                                    <input
-                                                        placeholder={`Alternativa ${alt.alternativa}`}
-                                                        className="w-full rounded-xl p-2 bg-muted"
-                                                        value={alt.conteudo}
-                                                        onChange={e => {
-                                                            const novas = [...novaQuestao.objetiva.alternativas];
-                                                            novas[i] = { ...novas[i], conteudo: e.target.value };
-
-                                                            setNovaQuestao(q => ({
-                                                                ...q,
-                                                                objetiva: { alternativas: novas }
-                                                            }));
-                                                        }}
-                                                    />
-                                                </div>
-                                            ))}
-
-                                        {/* ASSOCIATIVA */}
-                                        {tipoQuestao === "associativa" && (
-                                            <div className="space-y-2">
-                                                {novaQuestao.associativa.resposta.map((par, i) => (
-                                                    <div key={i} className="flex gap-2">
-                                                        <input
-                                                            placeholder={`Chave ${i + 1}`}
-                                                            className="flex-1 p-2 rounded-xl bg-muted"
-                                                            value={par.chave}
-                                                            onChange={e => {
-                                                                const resposta = [...novaQuestao.associativa.resposta];
-                                                                resposta[i] = { ...resposta[i], chave: e.target.value };
-                                                                setNovaQuestao(q => ({
-                                                                    ...q,
-                                                                    associativa: { resposta }
-                                                                }));
-                                                            }}
-                                                        />
-
-                                                        <input
-                                                            placeholder={`Valor ${i + 1}`}
-                                                            className="flex-1 p-2 rounded-xl bg-muted"
-                                                            value={par.valor}
-                                                            onChange={e => {
-                                                                const resposta = [...novaQuestao.associativa.resposta];
-                                                                resposta[i] = { ...resposta[i], valor: e.target.value };
-                                                                setNovaQuestao(q => ({
-                                                                    ...q,
-                                                                    associativa: { resposta }
-                                                                }));
-                                                            }}
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {/* descrtiva */}
-                                        {tipoQuestao === "descritiva" &&
-
+                                {/* OBJETIVA */}
+                                {tipoQuestao === "objetiva" &&
+                                    novaQuestao.objetiva.alternativas.map((alt, i) => (
+                                        <div key={i} className="flex items-center gap-2">
+                                            {/* Checkbox exclusivo */}
                                             <input
-                                                placeholder={`Padrão de resposta`}
-                                                className="w-full rounded-xl p-4 bg-muted"
-                                                onChange={e => {
+                                                type="checkbox"
+                                                checked={alt.correta}
+                                                onChange={() => {
+                                                    const novas = novaQuestao.objetiva.alternativas.map((a, index) => ({
+                                                        ...a,
+                                                        correta: index === i, // só a marcada fica true
+                                                    }));
+
                                                     setNovaQuestao(q => ({
                                                         ...q,
-                                                        descritiva: { resposta_correta: e.target.value }
+                                                        objetiva: { alternativas: novas }
                                                     }));
                                                 }}
                                             />
-                                        }
 
+                                            {/* Conteúdo da alternativa */}
+                                            <input
+                                                placeholder={`Alternativa ${alt.alternativa}`}
+                                                className="w-full rounded-xl p-2 bg-muted"
+                                                value={alt.conteudo}
+                                                onChange={e => {
+                                                    const novas = [...novaQuestao.objetiva.alternativas];
+                                                    novas[i] = { ...novas[i], conteudo: e.target.value };
 
-                                        {/* AÇÕES */}
-                                        <div className="flex justify-center gap-4 pt-4">
-                                            <button onClick={() => setModalAberto(false)}
-                                                className="bg-primary text-white px-4 py-2 rounded-xl"
-                                            >Cancelar</button>
-                                            <button
-                                                onClick={confirmarCriacao}
-                                                className="bg-primary text-white px-4 py-2 rounded-xl"
-                                            >
-                                                Criar Questão
-                                            </button>
+                                                    setNovaQuestao(q => ({
+                                                        ...q,
+                                                        objetiva: { alternativas: novas }
+                                                    }));
+                                                }}
+                                            />
                                         </div>
-                                    </>
+                                    ))}
+
+                                {/* ASSOCIATIVA */}
+                                {tipoQuestao === "associativa" && (
+                                    <div className="space-y-2">
+                                        {novaQuestao.associativa.resposta.map((par, i) => (
+                                            <div key={i} className="flex gap-2">
+                                                <input
+                                                    placeholder={`Chave ${i + 1}`}
+                                                    className="flex-1 p-2 rounded-xl bg-muted"
+                                                    value={par.chave}
+                                                    onChange={e => {
+                                                        const resposta = [...novaQuestao.associativa.resposta];
+                                                        resposta[i] = { ...resposta[i], chave: e.target.value };
+                                                        setNovaQuestao(q => ({
+                                                            ...q,
+                                                            associativa: { resposta }
+                                                        }));
+                                                    }}
+                                                />
+
+                                                <input
+                                                    placeholder={`Valor ${i + 1}`}
+                                                    className="flex-1 p-2 rounded-xl bg-muted"
+                                                    value={par.valor}
+                                                    onChange={e => {
+                                                        const resposta = [...novaQuestao.associativa.resposta];
+                                                        resposta[i] = { ...resposta[i], valor: e.target.value };
+                                                        setNovaQuestao(q => ({
+                                                            ...q,
+                                                            associativa: { resposta }
+                                                        }));
+                                                    }}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
-                            </div>
-                        </div>
-                    )}
+
+                                {/* descrtiva */}
+                                {tipoQuestao === "descritiva" &&
+
+                                    <input
+                                        placeholder={`Padrão de resposta`}
+                                        className="w-full rounded-xl p-4 bg-muted"
+                                        onChange={e => {
+                                            setNovaQuestao(q => ({
+                                                ...q,
+                                                descritiva: { resposta_correta: e.target.value }
+                                            }));
+                                        }}
+                                    />
+                                }
 
 
-
-
+                                {/* AÇÕES */}
+                                <div className="flex justify-center gap-4 pt-4">                                            <button onClick={() => setModalAberto(false)}
+                                    className="bg-primary text-white px-4 py-2 rounded-xl"
+                                >Cancelar</button>
+                                    <button
+                                        onClick={confirmarCriacao}
+                                        className="bg-primary text-white px-4 py-2 rounded-xl"
+                                    >
+                                        Criar Questão
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
-                <div className="relative bottom-0 flex items-center justify-center mt-2">
-                    <button
-                        className="bg-primary text-white w-64 p-4 rounded-full font-bold shadow-lg hover:scale-105 transition-transform"
-                        onClick={() => enviarProvas()}
-                    >
-                        Salvar Alterações em Todas as Provas
-                    </button>
-                </div>
-            </div>
-
-
-
-
-
-
-        </DashboardLayout>
+            )}
+        </DashboardLayout >
     );
 }

@@ -3,7 +3,7 @@ import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { getTurma, enviarTurma} from "@/services/turmas.service";
+import { getTurma, enviarTurma } from "@/services/turmas.service";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function Alunos() {
@@ -43,14 +43,14 @@ export default function Alunos() {
 
   const adicionarAluno = () => {
     if (!novoAluno.nome || !novoAluno.email) return;
-    
+
     // Geramos um ID temporário para alunos novos para que o React possa renderizar a lista
-    const alunoComId = { 
-      ...novoAluno, 
+    const alunoComId = {
+      ...novoAluno,
       ID_aluno: Date.now(), // ID temporário apenas para a interface
-      isNew: true 
+      isNew: true
     };
-    
+
     setAlunos((prev) => [...prev, alunoComId]);
     setNovoAluno({ nome: "", email: "" });
   };
@@ -69,13 +69,13 @@ export default function Alunos() {
     }
   };
   const cancelar = () => {
-      navigate("/turmas");
+    navigate("/turmas");
   };
 
 
 
 
-  
+
 
   return (
     <DashboardLayout title={isEdit ? "Editar Turma" : "Criar Turma"}>
@@ -92,39 +92,55 @@ export default function Alunos() {
         </div>
         <div className="max-w-4xl mx-auto space-y-8">
           <label className="text-sm font-semibold text-primary">Inserir alunos</label>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Input
               placeholder="Nome do aluno"
+              className="w-full" // Garante que ocupe tudo no mobile
               value={novoAluno.nome || ""}
               onChange={(e) => setNovoAluno({ ...novoAluno, nome: e.target.value })}
             />
             <Input
               placeholder="email@escola.com"
+              className="w-full"
               value={novoAluno.email || ""}
               onChange={(e) => setNovoAluno({ ...novoAluno, email: e.target.value })}
             />
-            <Button onClick={adicionarAluno}>
-              <Plus className="w-4 h-4" />
+            <Button
+              onClick={adicionarAluno}
+              className="w-full sm:w-auto" // Botão largo no mobile, tamanho normal no PC
+            >
+              <Plus className="w-4 h-4 mr-2" />
               Adicionar
             </Button>
           </div>
         </div>
-        <div className="max-w-4xl mx-auto space-y-8">
+
+        <div className="max-w-4xl mx-auto space-y-4">
+          {/* Header: Mesma estrutura da linha de conteúdo */}
+          <div className="flex px-2 m-1 border-b border-t border-border py-2">
+            <label className="flex-1 text-sm font-semibold text-primary">Alunos</label>
+            <label className="flex-1 text-sm font-semibold text-primary">Email</label>
+            {/* Espaçador para alinhar com o botão X de baixo */}
+            <div className="w-4"></div>
+          </div>
+
           {/* Lista de alunos */}
-          <label className="text-sm font-semibold text-primary">Alunos</label>
-          <div className=" space-y-2">
+          <div className="space-y-2">
             {alunos.map((aluno) => (
-              <div key={aluno.ID_aluno} className="bg-background rounded-md flex gap-2 p-2 m-1">
-                <span className="flex-1">{aluno.nome}</span>
-                <span className="flex-1">{aluno.email}</span>
-                <button onClick={() => removerAluno(aluno.ID_aluno)}>
+              <div key={aluno.ID_aluno} className="bg-muted/50 rounded-md p-2 m-1 flex gap-2 items-center">
+                <span className="flex-1 truncate">{aluno.nome}</span>
+                <span className="flex-1 truncate">{aluno.email}</span>
+                <button
+                  onClick={() => removerAluno(aluno.ID_aluno)}
+                  className="text-muted-foreground hover:text-destructive"
+                >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ))}
           </div>
         </div>
-        <div className="flex items-center justify-center gap-8"> 
+        <div className="flex items-center justify-center gap-8 mt-2">
           <Button onClick={salvarTurma} className="mt-6">
             {isEdit ? "Salvar Alterações" : "Criar Turma"}
           </Button>

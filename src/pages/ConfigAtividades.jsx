@@ -59,7 +59,8 @@ export default function ConfigAtividades() {
   const [camposValidados, setCamposValidados] = useState(false);
   const { id } = useParams();
   const isEdit = id;
-    const [totalQuestoes, setQuantidadeQuestoes] = useState(0);
+  const [totalQuestoes, setQuantidadeQuestoes] = useState(0);
+  const [erroArquivo, setErroArquivo] = useState("");
 
 
 
@@ -108,14 +109,14 @@ export default function ConfigAtividades() {
 
   useEffect(() => {
     const totQuestoes = Object.values(questoes).reduce(
-    (acc, v) => acc + v,
-    0
-  );
+      (acc, v) => acc + v,
+      0
+    );
     setQuantidadeQuestoes(totQuestoes);
   }, [questoes]);
 
   useEffect(() => {
-    if(totalQuestoes > qtdQuestoes){
+    if (totalQuestoes > qtdQuestoes) {
 
       setQuestoes({ descritiva: 0, objetiva: 0, associativa: 0 });
     }
@@ -159,9 +160,15 @@ export default function ConfigAtividades() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setMaterial(file); // Salva o arquivo (PDF/Doc) no estado
+    setErroArquivo(""); // Reseta o erro ao trocar de arquivo
+
+    if (file && file.size > 10 * 1024 * 1024) {
+      setErroArquivo("O arquivo excede o limite de 10MB.");
+      e.target.value = "";
+      return;
     }
+
+    setMaterial(file);
   };
 
   const adicionarAula = () => {
@@ -265,7 +272,7 @@ export default function ConfigAtividades() {
           </SelectContent>
         </Select>
 
-        <div className="flex gap-0 w-full">
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
           {/* Input para Quantidade de Provas */}
           <input
             type="number"
@@ -287,92 +294,91 @@ export default function ConfigAtividades() {
           />
         </div>
 
-{qtdQuestoes > 0 && (
-  <div className="bg-primary rounded-2xl p-4">
-    <h3 className="font-display text-lg font-bold text-primary-foreground mb-2 text-center">
-      Distribua o mínimo de cada tipo de questão
-    </h3>
-    <div className="flex flex-row gap-1 justify-center">
-      {tiposQuestao.map((tipo) => {
-        const valor = questoes[tipo.id] || 0;
-        const min = 0;
+        {qtdQuestoes > 0 && (
+          <div className="bg-primary rounded-2xl p-4">
+            <h3 className="font-display text-lg font-bold text-primary-foreground mb-2 text-center">
+              Distribua o mínimo de cada tipo de questão
+            </h3>
+            <div className="flex flex-wrap gap-4 justify-center">      {tiposQuestao.map((tipo) => {
+              const valor = questoes[tipo.id] || 0;
+              const min = 0;
 
-        const podeAdicionar = totalQuestoes < qtdQuestoes;
-        const podeRemover = valor > min;
+              const podeAdicionar = totalQuestoes < qtdQuestoes;
+              const podeRemover = valor > min;
 
-        // Função para lidar com a digitação direta
-        const handleInputChange = (e) => {
-          const novoValor = parseInt(e.target.value) || 0;
-          const diferenca = novoValor - valor;
+              // Função para lidar com a digitação direta
+              const handleInputChange = (e) => {
+                const novoValor = parseInt(e.target.value) || 0;
+                const diferenca = novoValor - valor;
 
-          // Valida se a alteração manual respeita o limite total e o mínimo
-          if (totalQuestoes + diferenca <= qtdQuestoes && novoValor >= 0) {
-            setQuestoes({
-              ...questoes,
-              [tipo.id]: novoValor,
-            });
-          }
-        };
-
-        return (
-          <div key={tipo.id} className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-2 bg-muted rounded-full px-3 py-1">
-              <Button
-                size="icon"
-                variant="secondary"
-                className="rounded-full h-8 w-8"
-                disabled={!podeRemover}
-                onClick={() =>
+                // Valida se a alteração manual respeita o limite total e o mínimo
+                if (totalQuestoes + diferenca <= qtdQuestoes && novoValor >= 0) {
                   setQuestoes({
                     ...questoes,
-                    [tipo.id]: valor - 1,
-                  })
+                    [tipo.id]: novoValor,
+                  });
                 }
-              >
-                −
-              </Button>
+              };
 
-              <input
-                type="text"
-                placeholder={tipo.label}
-                value={valor}
-                onChange={handleInputChange}
-                className="w-10 text-center font-bold text-primary bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
+              return (
+                <div key={tipo.id} className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2 bg-muted rounded-full px-3 py-1">
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="rounded-full h-8 w-8"
+                      disabled={!podeRemover}
+                      onClick={() =>
+                        setQuestoes({
+                          ...questoes,
+                          [tipo.id]: valor - 1,
+                        })
+                      }
+                    >
+                      −
+                    </Button>
 
-              <Button
-                size="icon"
-                className="rounded-full h-8 w-8"
-                disabled={!podeAdicionar}
-                onClick={() =>
-                  setQuestoes({
-                    ...questoes,
-                    [tipo.id]: valor + 1,
-                  })
-                }
-              >
-                +
-              </Button>
+                    <input
+                      type="text"
+                      placeholder={tipo.label}
+                      value={valor}
+                      onChange={handleInputChange}
+                      className="w-10 text-center font-bold text-primary bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+
+                    <Button
+                      size="icon"
+                      className="rounded-full h-8 w-8"
+                      disabled={!podeAdicionar}
+                      onClick={() =>
+                        setQuestoes({
+                          ...questoes,
+                          [tipo.id]: valor + 1,
+                        })
+                      }
+                    >
+                      +
+                    </Button>
+                  </div>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-sm font-medium cursor-help">
+                          {tipo.label}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{tipo.descricao}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              );
+            })}
             </div>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-sm font-medium cursor-help">
-                    {tipo.label}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{tipo.descricao}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+        )}
 
         {/* Adicionar Aulas */}
         <div className="flex gap-2">
@@ -417,7 +423,7 @@ export default function ConfigAtividades() {
             </div>
           )}
         </div>
-
+        {erroArquivo && <p className="text-destructive text-xs mt-1">{erroArquivo}</p>}
         {/* Material Complementar */}
         <input
           type="file"
@@ -432,9 +438,12 @@ export default function ConfigAtividades() {
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm">
                 {material ? "Alterar Material Complementar" : "Adicionar Material Complementar"}
+                <br />
+                <span>Máximo 10 Mb</span>
               </span>
               <FileText className={`w-5 h-5 "text-primary"`} />
             </div>
+
 
             <Button
               onClick={() => fileInputRef.current.click()} // Aciona o input escondido

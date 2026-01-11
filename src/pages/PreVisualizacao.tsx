@@ -37,6 +37,7 @@ export default function PreVisualizacao() {
   const navigate = useNavigate();
   const [provasRestantes, setProvasRestantes] = useState(0)
   const [statusAssinatura, setStatusAssinatura] = useState(false);
+  const [zoom, setZoom] = useState(70);
 
 
   useEffect(() => {
@@ -51,6 +52,22 @@ export default function PreVisualizacao() {
     }
     carregar();
   }, [idProjeto]);
+
+  useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 640) { // Mobile (sm)
+      setZoom(30);
+    } else if (window.innerWidth < 1024) { // Tablet (md/lg)
+      setZoom(60);
+    } else { // Desktop
+      setZoom(65);
+    }
+  };
+
+  handleResize(); // Executa ao montar
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
   useEffect(() => {
     async function carregar() {
@@ -130,7 +147,7 @@ export default function PreVisualizacao() {
           <div className="bg-muted rounded-xl p-4 aspect-[3/4] flex items-center justify-center mb-6">
             {url ? (
               <iframe
-                src={`${url}#zoom=70`}
+                src={`${url}#zoom=${zoom}`}
                 title="Preview PDF"
                 className="w-full h-full rounded-lg bg-white"
               />

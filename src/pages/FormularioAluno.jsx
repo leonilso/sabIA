@@ -292,7 +292,7 @@ export default function FormularioAluno() {
           <h3 className="font-display text-lg font-bold text-primary-foreground mb-3 text-center">
             Você precisa distribuir {projeto.QTD_questoes} questões
           </h3>
-          <div className="flex flex-row gap-2 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             {tiposQuestao.map((tipo) => {
               const valor = questoes[tipo.id];
               const min = MinPorTipo[tipo.id];

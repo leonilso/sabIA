@@ -64,7 +64,7 @@ export default function LinkGerado() {
         </div>
 
         {/* Input de link para copiar */}
-        <div className="bg-background border rounded-2xl p-2 flex items-center gap-2">
+        <div className="bg-background border rounded-2xl p-2 flex items-center gap-2 mt-4">
           <input 
             readOnly 
             value={urlAlunos}

@@ -25,7 +25,7 @@ export default function Index() {
         </Button>
       </header>
 
-      <section className="py-20 px-6 text-center">
+      <section className="py-10 px-6 text-center">
         <div className="max-w-3xl mx-auto">
           <h2 className="font-display text-5xl font-bold text-foreground mb-6 leading-tight">
             Transforme suas aulas em <span className="text-primary">provas personalizadas</span> com IA

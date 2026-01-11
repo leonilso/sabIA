@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, FileText, Users, Crown } from "lucide-react";
-import sabia from "../assets/sabia.png"
+import sabia from "../assets/sabiaNoEscritaBranco.png.png"
 
 export default function Index() {
   return (

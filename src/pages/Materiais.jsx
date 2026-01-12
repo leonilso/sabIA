@@ -8,6 +8,8 @@ import { pegarTurmas } from "../services/turmas.service";
 import { Trash2, Printer, Link2, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading"
+import AlertModal from "../components/AlertModal";
+import { useConfirm } from "../contexts/ConfirmContext"
 
 // const projetos = [
 //   { id: 1, nome: "Atividade 6 B - História do Brasil", imagem: "🗺️" },
@@ -27,6 +29,10 @@ export default function Materiais() {
   const [loading, setLoading] = useState(true);
   const [turmas, setTurmas] = useState([]);
   const [turma, setTurma] = useState({nome_turma: "", ID_turma: 0});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("");
+  const confirm = useConfirm();
+
 
     useEffect(() => {
       async function carregar() {
@@ -87,9 +93,35 @@ export default function Materiais() {
     )
   }
 
+  const handleModal = () => {
+      setMensagemModal("Você deve ter pelo mínimo uma turma");
+      setIsModalOpen(true);
+  }
+
+    const handleExcluir = async (id) => {
+    const ok = await confirm({
+      title: "Excluir material?",
+      message: "Excluir material",
+      confirmText: "Sim, apagar tudo",
+      cancelText: "Não, cancelar"
+    });
+    if (ok) {
+      removerProjeto(id);
+    }
+  }
+
+
+
   if (loading) return <Loading/>
   return (
     <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Meus Materiais` : `Meus Materiais`}>
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="relative min-h-[calc(100vh-200px)] pb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
@@ -127,9 +159,7 @@ export default function Materiais() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation(); // Impede que o clique no botão abra a turma
-                if (confirm("Deseja realmente excluir este projeto? Isso não poderá ser desfeito")) {
-                  removerProjeto(projeto.ID);
-                }
+                handleExcluir(projeto.ID)
               }}
 
               
@@ -206,7 +236,7 @@ export default function Materiais() {
       </Button>  : 
       <Button
         className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
-        onClick={(e) => {alert("Você deve ter pelo mínimo uma turma")}}
+        onClick={(e) => {handleModal}}
         asChild
       >
          <Link to="/turmas">

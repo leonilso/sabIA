@@ -15,7 +15,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { enviarProjetoAluno, pegarAlunosPorTurma } from "../services/alunos.service"
 import { pegarProjeto } from "../services/projetos.service";
-import sabia from "../assets/sabiaNoEscrita.png"
+import sabia from "../assets/sabiaNoEscrita.png";
+import AlertModal from "../components/AlertModal";
 
 
 const tiposQuestao = [
@@ -152,6 +153,9 @@ export default function FormularioAluno() {
   objetiva: 0,
   associativa: 0,
 })
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("")
+
 
 
   useEffect(() => {
@@ -219,7 +223,9 @@ export default function FormularioAluno() {
         navigate("/aluno/obrigado");
     } catch (error) {
       console.error("Erro ao configurar informações:", error);
-      alert("Falha ao carregar informações.");
+            setMensagemModal("Falha ao carregar informações.");
+      setIsModalOpen(true);
+      // alert("Falha ao carregar informações.");
     }
   };
 
@@ -234,6 +240,13 @@ export default function FormularioAluno() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-full flex items-center justify-center">
             <img

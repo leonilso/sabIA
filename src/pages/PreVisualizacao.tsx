@@ -13,7 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import PdfPreview from "../components/ui/PdfPreview"
+import PdfPreview from "../components/ui/PdfPreview";
+import AlertModal from "../components/AlertModal";
 
 
 const vazio = {
@@ -41,6 +42,9 @@ export default function PreVisualizacao() {
   const [provasRestantes, setProvasRestantes] = useState(0)
   const [statusAssinatura, setStatusAssinatura] = useState(false);
   const [zoom, setZoom] = useState(70);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("")
+
 
 
   useEffect(() => {
@@ -115,7 +119,8 @@ export default function PreVisualizacao() {
         setProvasRestantes(provasRestantes - 1)
         setUrl(urlApi)
       } else {
-        alert("Suas provas acabaram")
+              setMensagemModal("Suas provas acabaram!");
+      setIsModalOpen(true);
       }
 
 
@@ -148,6 +153,13 @@ export default function PreVisualizacao() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center py-8 px-4">
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="flex flex-col lg:flex-row gap-6 max-w-5xl w-full">
 
 

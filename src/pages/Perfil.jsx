@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { User, Mail, LogOut, Trash2, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { deleteUser, setarNovaSenha } from "../services/auth.service";
+import AlertModal from "../components/AlertModal";
+import { useConfirm } from "../contexts/ConfirmContext"
 
 export default function Perfil() {
   const { user, logout } = useContext(AuthContext);
@@ -14,6 +16,10 @@ export default function Perfil() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [erroSenha, setErroSenha] = useState("");
   const [salvandoSenha, setSalvandoSenha] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("");
+  const confirm = useConfirm();
+
 
   if (!user) {
     return (
@@ -51,7 +57,8 @@ export default function Perfil() {
     try {
       setSalvandoSenha(true);
       await setarNovaSenha(senha);
-      alert("Senha alterada com sucesso!");
+            setMensagemModal("Senha alterada com sucesso");
+      setIsModalOpen(true);
       setSenha("");
       setConfirmarSenha("");
     } catch (err) {
@@ -63,9 +70,17 @@ export default function Perfil() {
   }
 
   async function handleDeletarConta() {
-    const confirmar = window.confirm(
-      "⚠️ Tem certeza que deseja excluir sua conta?\nEssa ação não pode ser desfeita."
-    );
+    // const confirmar = window.confirm(
+    //   "⚠️ Tem certeza que deseja excluir sua conta?\nEssa ação não pode ser desfeita."
+    // );
+
+    const confirmar = await confirm({
+      title: "Excluir conta?",
+      message: "Tem certeza que deseja excluir sua conta?\nEssa ação não pode ser desfeita. E você perderá todos os eus projetos, qualquer valor de assinatura restante não será restituído!",
+      confirmText: "Sim, excluir conta",
+      cancelText: "Não, cancelar"
+    });
+
 
     if (!confirmar) return;
 
@@ -75,7 +90,8 @@ export default function Perfil() {
       logout();
       navigate("/");
     } catch (err) {
-      alert("Erro ao excluir conta.");
+            setMensagemModal("Erro ao excluir conta");
+      setIsModalOpen(true);
       console.error(err);
     } finally {
       setDeletando(false);
@@ -84,6 +100,13 @@ export default function Perfil() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="w-full max-w-md bg-card rounded-3xl p-6 shadow-card">
 
         {/* Cabeçalho */}

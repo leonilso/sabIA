@@ -6,7 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import AppRoutes from "./routes/index"
 import { GoogleOAuthProvider } from '@react-oauth/google'
-import {ModalProvider} from './contexts/ModalContext'
+import { ModalProvider } from './contexts/ModalContext'
+import { ConfirmProvider } from './contexts/ConfirmContext'
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -16,10 +18,11 @@ const App = () => (
         <GoogleOAuthProvider clientId="130730820982-mecjjdad8glppkpq4ch2o9iqidvb11kh.apps.googleusercontent.com">
           <TooltipProvider>
             <ModalProvider>
-
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
+              <ConfirmProvider>
+                <Toaster />
+                <Sonner />
+                <AppRoutes />
+              </ConfirmProvider>
             </ModalProvider>
           </TooltipProvider>
         </GoogleOAuthProvider>

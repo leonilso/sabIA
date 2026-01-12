@@ -6,6 +6,7 @@ import jsQR from "jsqr"; // Biblioteca leve para ler os pixels do canvas
 import { Plus, X, FileText, Link as LinkIcon } from "lucide-react";
 import { pegarAluno } from "../services/alunos.service";
 import { DashboardLayout } from "@/components/layout";
+import AlertModal from "../components/AlertModal";
 
 export default function CorrigirProva() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +22,9 @@ export default function CorrigirProva() {
   const [loadingCanvas, setLoadingCanvas] = useState(false);
   const [dadosAluno, setDadosAluno] = useState(null);
   const [cameraLigada, setCameraLigada] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("")
+
 
   const startCamera = async () => {
     try {
@@ -177,7 +181,8 @@ const stopCamera = () => {
         );
         setResultado(response);
       } catch {
-        alert("Erro ao corrigir gabarito");
+              setMensagemModal("Falha ao corrigir o gabarito! tire a foto em um local iluminado, com a prova centrada da imagem. Evitando mostrar fora do enquadramento");
+      setIsModalOpen(true);
       } finally {
         setLoading(false);
         if (!paginaCorrigir) setScanning(true);
@@ -299,6 +304,13 @@ const stopCamera = () => {
 
   return (
     <DashboardLayout>
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       <div className="max-w-md mx-auto space-y-4 p-4">
 

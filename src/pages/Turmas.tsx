@@ -8,6 +8,7 @@ import { apagarTurma } from "@/services/turmas.service";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Pencil } from "lucide-react";
 import Loading from "./Loading";
+import { useConfirm } from "../contexts/ConfirmContext"
 
 // Mock data for classes
 // const turmas = [
@@ -23,6 +24,7 @@ export default function Turmas() {
   const [turmas, setTurmas] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
 
   useEffect(() => {
@@ -48,6 +50,18 @@ export default function Turmas() {
       console.error(err);
     }
   };
+
+  const handleExcluir = async (id) => {
+    const ok = await confirm({
+      title: "Excluir turma?",
+      message: "Deseja realmente excluir esta turma? Essa ação irá apagar todos os projetos associados a ela. Essa ação não poderá ser desfeita",
+      confirmText: "Sim, apagar tudo",
+      cancelText: "Não, cancelar"
+    });
+    if (ok) {
+      removerTurma(id);
+    }
+  }
 
   if (loading) return <Loading/>;
   return (
@@ -80,9 +94,7 @@ export default function Turmas() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation(); // Impede que o clique no botão abra a turma
-                if (confirm("Deseja realmente excluir esta turma? Essa ação irá apagar todos os projetos associados a ela e não poderá ser desfeita")) {
-                  removerTurma(turma.ID_turma);
-                }
+                handleExcluir(turma.ID_turma);
               }}
               // Mudamos 'right-3' para 'right-14' para ele ficar ao lado do editar
               className="absolute top-3 right-3 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"

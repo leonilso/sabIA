@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import sabia from "../assets/sabiaNoEscrita.png"
-
+import AlertModal from "../components/AlertModal";
 
 const disciplinas = [
   "Língua Portuguesa",
@@ -63,7 +63,8 @@ export default function ConfigAtividades() {
   const isEdit = id;
   const [totalQuestoes, setQuantidadeQuestoes] = useState(0);
   const [erroArquivo, setErroArquivo] = useState("");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("")
 
 
 
@@ -209,7 +210,9 @@ export default function ConfigAtividades() {
       }
     } catch (error) {
       console.error("Erro ao criar projeto:", error);
-      alert("Falha ao gerar o projeto. Verifique os dados e tente novamente.");
+      setMensagemModal("Falha ao gerar o projeto. Verifique os dados e tente novamente.");
+      setIsModalOpen(true);
+      // alert("Falha ao gerar o projeto. Verifique os dados e tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -235,6 +238,13 @@ export default function ConfigAtividades() {
   if (loading) return <Loading />
   return (
     <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
+      {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="flex items-center gap-3 mb-8">
         <div className="w-12 h-12 rounded-full flex items-center justify-center">
             <img

@@ -8,6 +8,7 @@ import { pegarTurmas } from "../services/turmas.service";
 import { Trash2, Printer, Link2, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading"
+import AlertModal from "../components/AlertModal";
 
 // const projetos = [
 //   { id: 1, nome: "Atividade 6 B - História do Brasil", imagem: "🗺️" },
@@ -27,6 +28,9 @@ export default function Provas() {
   const [loading, setLoading] = useState(true);
   const [turmas, setTurmas] = useState([]);
   const [turma, setTurma] = useState({nome_turma: "", ID_turma: 0});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("")
+
 
     useEffect(() => {
       async function carregar() {
@@ -84,9 +88,21 @@ export default function Provas() {
     navigate(`/impressao/${projeto.ID}`)
   }
 
+  const handleModal = () => {
+          setMensagemModal("Você deve ter no mínimo uma turma");
+      setIsModalOpen(true);
+  }
+
   if (loading) return <Loading/>
   return (
     <DashboardLayout title={id ? `Turma ${turma.nome_turma} - Minhas Provas` : `Minhas Provas`}>
+            {isModalOpen && (
+        <AlertModal 
+          message={mensagemModal}
+          cancelText="ok"
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="relative min-h-[calc(100vh-200px)] pb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projetos.map((projeto) => (
@@ -165,7 +181,7 @@ export default function Provas() {
       </Button>  : 
       <Button
         className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
-        onClick={(e) => {alert("Você deve ter pelo mínimo uma turma")}}
+        onClick={(e) => {handleModal}}
         asChild
       >
          <Link to="/turmas">

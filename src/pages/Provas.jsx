@@ -180,7 +180,7 @@ export default function Provas() {
 
       </Button>  : 
       <Button
-        className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        className="fixed bottom-12 right-3 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
         onClick={(e) => {handleModal}}
         asChild
       >

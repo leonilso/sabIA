@@ -122,7 +122,7 @@ export default function Turmas() {
 
       <Link
         to={`/turmas/criar`}
-        className="absolute bottom-2 right-2 flex bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-10 py-2 shadow-lg gap-2"
+        className="fixed bottom-12 right-3 flex bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-10 py-2 shadow-lg gap-2"
       >
         <Plus className="w-5 h-5" />
         Nova Turma

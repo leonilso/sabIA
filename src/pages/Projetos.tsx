@@ -95,7 +95,7 @@ const confirm = useConfirm();
   }
 
   const paginaLink = (projeto) => {
-    let resultado = projeto;
+    const resultado = projeto;
     resultado.turma = (turmas.find((t) => t.ID_turma == projeto.ID_turma)).nome_turma
     navigate(`/projetos/turma/${resultado.ID_turma}/projeto/${resultado.ID}/link-gerado`, { 
           state: { resultado } 
@@ -231,8 +231,8 @@ const confirm = useConfirm();
 
       </Button>  : 
       <Button
-        className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
-        onClick={(e) => {handleModal}}
+        className="fixed bottom-12 right-3 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        onClick={(e) => {handleModal()}}
         asChild
       >
          <Link to="/turmas">

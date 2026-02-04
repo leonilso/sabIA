@@ -121,11 +121,14 @@ export default function Turmas() {
     
 
       <Button
-        onClick={(e) => {navigate(`/turmas/criar`)}}
+        // onClick={(e) => {navigate(`/turmas/criar`)}}
         className="fixed bottom-12 right-8 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        asChild
       >
-        <Plus className="w-5 h-5" />
-        Nova Turma
+        <Link to="/turmas/criar">
+          <Plus className="w-5 h-5" />
+          Nova Turma
+        </Link>
       </Button>
       </div>
     </DashboardLayout>

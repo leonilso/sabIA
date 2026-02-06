@@ -397,7 +397,7 @@ const stopCamera = () => {
         />
 
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground rounded-full text-sm">
                 {paginaCorrigir ?

@@ -170,7 +170,7 @@ export default function Provas() {
         </div>
       {turmas.length > 0 ?
       <Button
-        className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        className="fixed bottom-4 right-8 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
         asChild
       >
          <Link to={`/projetos/turma/${id ? id : 0}/projeto/novo/config`}>
@@ -180,7 +180,7 @@ export default function Provas() {
 
       </Button>  : 
       <Button
-        className="fixed bottom-12 right-8 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
+        className="fixed bottom-4 right-8 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full px-6 py-6 shadow-lg gap-2"
         onClick={(e) => {handleModal}}
         asChild
       >

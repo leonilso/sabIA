@@ -116,7 +116,7 @@ export function AppSidebar() {
       </aside>
 
       {/* VERSÃO MOBILE: Botão Flutuante e Drawer */}
-      <div className="md:hidden fixed bottom-12 left-4 z-40">
+      <div className="md:hidden fixed bottom-4 left-4 z-40">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button 

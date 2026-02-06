@@ -15,7 +15,7 @@ export function DashboardLayout({ children, title, subtitle }: DashboardLayoutPr
       <div className="flex">
         <AppSidebar />
         <main className="flex-1 pt-6 pb-6 px-6 bg-background rounded-tl-3xl">
-          <div className="bg-card rounded-3xl p-6 max-h-[calc(100vh-8rem)] min-h-[calc(100vh-8rem)] shadow-card overflow-y-auto">
+          <div className="bg-card rounded-3xl p-6 max-h-[calc(100vh-8rem)] min-h-[calc(100vh-8rem)] shadow-card overflow-y-auto scrollbar-thin">
             {(title || subtitle) && (
               <div>
                 {title && (

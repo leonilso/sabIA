@@ -33,7 +33,11 @@ const disciplinas = [
   "Química",
   "Sociologia",
   "Filosofia",
-  "Pensamento Computacional"
+  "Pensamento Computacional",
+  "Banco de Dados",
+  "Computação Gráfica",
+  "Introdução a computação",
+  "Inovação Tecnológica e Empreendedorismo"
 ];
 const turmasOptions = ["6º ano", "7º ano", "8º ano", "9º ano", "1º ano EM", "2º ano EM"];
 
